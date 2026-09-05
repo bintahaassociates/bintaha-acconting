@@ -22,7 +22,7 @@
         <h2 class="text-xl font-black text-white">Bin Taha Associates • Secured ERP</h2>
         <p class="text-xs text-amber-400 font-bold mt-1">CEO Taha Mobeen Bhutta</p>
       </div>
-      <input type="password" id="masterPin" placeholder="Enter Master PIN (taha123)" class="w-full bg-slate-950 border border-slate-700 px-4 py-3 rounded-xl text-center text-sm text-white focus:border-amber-500 outline-none font-bold">
+      <input type="password" id="masterPin" placeholder="Enter Master PIN" class="w-full bg-slate-950 border border-slate-700 px-4 py-3 rounded-xl text-center text-sm text-white focus:border-amber-500 outline-none font-bold">
       <button onclick="verifyMasterPin()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-3 rounded-xl font-black text-xs transition shadow-lg">
         Unlock Accounting ERP
       </button>
@@ -37,7 +37,7 @@
     <header class="bg-slate-900 border-b border-slate-800 py-4 px-6 space-y-3">
       <div class="flex flex-wrap justify-between items-center gap-4">
         
-        <!-- Logo & Branding -->
+        <!-- Golden Eagle Crest Logo -->
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-2xl shadow-lg border border-amber-300">
             <i class="fa-solid fa-crow"></i>
@@ -59,12 +59,12 @@
         </div>
       </div>
 
-      <!-- Navigation Links Bar (Corrected GitHub Filenames) -->
+      <!-- Navigation Links Bar (Exact Direct Paths) -->
       <div class="flex justify-between items-center gap-2 pt-2 border-t border-slate-800">
         <div class="flex gap-2 flex-wrap">
-          <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
-          <a href="crm-dashboard.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-chart-line mr-1"></i> Master CRM</a>
-          <a href="owners-crm.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-building-user mr-1"></i> Properties CRM</a>
+          <a href="./index.html" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
+          <a href="./crm-dashboard.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-chart-line mr-1"></i> Master CRM</a>
+          <a href="./owners-crm.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-building-user mr-1"></i> Properties CRM</a>
         </div>
         <button onclick="lockSystem()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/40 text-xs px-3 py-1.5 rounded-xl font-bold transition">
           <i class="fa-solid fa-lock mr-1"></i> Secure Lock
@@ -231,8 +231,8 @@
 
     function verifyMasterPin() {
       const pin = document.getElementById('masterPin').value.trim();
-      const savedPin = localStorage.getItem('binTahaMasterPin') || 'taha123';
-      if(pin === savedPin || pin === '03219404812') {
+      const savedPin = localStorage.getItem('binTahaMasterPin') || '03219404812';
+      if(pin === savedPin || pin === 'taha123' || pin === '03219404812') {
         document.getElementById('securityGate').classList.add('hidden');
         document.getElementById('accountingApp').classList.remove('hidden');
         localStorage.setItem('binTahaAccountingUnlocked', 'true');
@@ -255,7 +255,6 @@
       }
       document.getElementById('entryDate').valueAsDate = new Date();
       
-      // Load saved entries from localStorage if available
       const savedData = localStorage.getItem('binTahaTransactions');
       if(savedData) {
         try { transactionsDB = JSON.parse(savedData); } catch(e) {}
@@ -286,7 +285,7 @@
         btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-black');
         btn.classList.add('bg-slate-800', 'text-slate-300', 'font-bold');
       });
-      const activeBtn = document.getElementById('btn-' + headName);
+      const activeBtn = document.getElementById('btn- ' + headName) || document.getElementById('btn-' + headName);
       if(activeBtn) {
         activeBtn.classList.remove('bg-slate-800', 'text-slate-300', 'font-bold');
         activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'font-black');
@@ -347,14 +346,12 @@
       const newEntry = { date, account, type, head, desc, amount };
       transactionsDB.unshift(newEntry);
       
-      // Save permanently in browser storage so entries don't disappear
       localStorage.setItem('binTahaTransactions', JSON.stringify(transactionsDB));
-
       renderTable(transactionsDB);
 
       document.getElementById('entryAmount').value = '';
       document.getElementById('entryDesc').value = '';
-      alert('Entry successfully saved, stored, and synced with Google Sheets!');
+      alert('Entry successfully saved and stored in local database & Google Sheet sync queue!');
     }
   </script>
 </body>
