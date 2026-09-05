@@ -30,8 +30,8 @@
     </div>
   </div>
 
-  <!-- Main Accounting ERP App -->
-  <div id="accountingApp" class="hidden flex-1 flex flex-col justify-between">
+  <!-- Main Accounting ERP App (Properly initialized hidden state) -->
+  <div id="accountingApp" style="display: none;" class="flex-1 flex flex-col justify-between">
     
     <!-- Top Header -->
     <header class="bg-slate-900 border-b border-slate-800 py-4 px-6 space-y-3">
@@ -245,8 +245,8 @@
       const pin = document.getElementById('masterPin').value.trim();
       const savedPin = localStorage.getItem('binTahaUniversalMasterPin') || 'taha123';
       if(pin === savedPin || pin === '03219404812') {
-        document.getElementById('securityGate').classList.add('hidden');
-        document.getElementById('accountingApp').classList.remove('hidden');
+        document.getElementById('securityGate').style.display = 'none';
+        document.getElementById('accountingApp').style.display = 'flex';
         localStorage.setItem('binTahaAccountingUnlocked', 'true');
       } else {
         document.getElementById('pinError').classList.remove('hidden');
@@ -260,15 +260,15 @@
         alert('Universal Master PIN successfully updated for all project pages!');
       }
       localStorage.removeItem('binTahaAccountingUnlocked');
-      document.getElementById('accountingApp').classList.add('hidden');
-      document.getElementById('securityGate').classList.remove('hidden');
+      document.getElementById('accountingApp').style.display = 'none';
+      document.getElementById('securityGate').style.display = 'flex';
       document.getElementById('masterPin').value = '';
     }
 
     window.onload = function() {
       if(localStorage.getItem('binTahaAccountingUnlocked') === 'true') {
-        document.getElementById('securityGate').classList.add('hidden');
-        document.getElementById('accountingApp').classList.remove('hidden');
+        document.getElementById('securityGate').style.display = 'none';
+        document.getElementById('accountingApp').style.display = 'flex';
       }
       document.getElementById('entryDate').valueAsDate = new Date();
       
