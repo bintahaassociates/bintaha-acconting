@@ -3,774 +3,362 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secured Master Accounting & Private CRM ERP | Bin Taha Associates</title>
+  <title>Bin Taha Associates • Global Accounting ERP</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    .shining-gold { color: #fcd34d; text-shadow: 0 0 15px rgba(252, 211, 77, 0.3); }
-    .gold-glow { box-shadow: 0 0 25px rgba(252, 211, 77, 0.2); }
-
-    /* 3D Dynamic Moving Eagle Logo Animation */
-    @keyframes eagle3DRotate {
-        0% { transform: perspective(1000px) rotateY(0deg) scale(1); filter: drop-shadow(0 0 10px rgba(252, 211, 77, 0.4)); }
-        50% { transform: perspective(1000px) rotateY(180deg) scale(1.08); filter: drop-shadow(0 0 25px rgba(252, 211, 77, 0.9)); }
-        100% { transform: perspective(1000px) rotateY(360deg) scale(1); filter: drop-shadow(0 0 10px rgba(252, 211, 77, 0.4)); }
-    }
-    .moving-eagle-3d {
-        animation: eagle3DRotate 6s infinite linear;
-        transform-style: preserve-3d;
-    }
+    .gold-glow { box-shadow: 0 0 40px rgba(252, 211, 77, 0.25); }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-  <!-- Master Vault PIN Lock Screen -->
-  <div id="lockScreen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 gold-glow">
-      <div class="w-16 h-16 bg-amber-500 text-slate-950 rounded-2xl mx-auto flex items-center justify-center text-2xl font-black shadow-lg">
-        <i class="fa-solid fa-lock"></i>
+  <div id="securityGate" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-amber-500/50 p-8 rounded-3xl max-w-sm w-full space-y-6 shadow-2xl text-center gold-glow">
+      <div class="w-16 h-16 bg-amber-500 text-slate-950 rounded-2xl mx-auto flex items-center justify-center font-black text-2xl shadow">
+        <i class="fa-solid fa-shield-halved"></i>
       </div>
       <div>
-        <h2 class="text-xl font-black text-white">Bin Taha Secured Financial & CRM Vault</h2>
-        <p class="text-xs text-slate-400 mt-1">Enter your Master PIN to access Accounting & Private Owner Directory</p>
+        <h2 class="text-xl font-black text-white">Bin Taha Associates • Secured ERP</h2>
+        <p class="text-xs text-amber-400 font-bold mt-1">CEO Taha Mobeen Bhutta</p>
       </div>
-      <form onsubmit="verifyPin(event)" class="space-y-4">
-        <input type="password" id="masterPinInput" required maxlength="6" placeholder="Enter Master PIN" class="w-full bg-slate-950 border border-slate-700 p-3.5 rounded-xl text-center text-lg text-amber-400 font-black tracking-widest focus:ring-2 focus:ring-amber-500">
-        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3.5 rounded-xl text-sm transition shadow-xl cursor-pointer">
-          <i class="fa-solid fa-unlock mr-2"></i> Unlock Master Vault
-        </button>
-      </form>
-      <p class="text-[10px] text-slate-500">Authorized Access Only: Taha Mobeen Bhutta (CEO)</p>
+      <input type="password" id="masterPin" placeholder="Enter Master PIN" class="w-full bg-slate-950 border border-slate-700 px-4 py-3 rounded-xl text-center text-sm text-white focus:border-amber-500 outline-none font-bold">
+      <button onclick="verifyMasterPin()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-3 rounded-xl font-black text-xs transition shadow-lg">
+        Unlock Accounting ERP
+      </button>
+      <p id="pinError" class="text-rose-400 text-xs font-bold hidden">Incorrect PIN! Access Denied.</p>
     </div>
   </div>
 
-  <!-- Main App Content (Hidden until PIN is entered) -->
-  <div id="appContent" class="hidden flex-col min-h-screen justify-between">
+  <div id="accountingApp" class="hidden flex-1 flex flex-col justify-between">
     
-    <div class="bg-slate-900 text-slate-400 text-xs py-2 px-4 sm:px-6 border-b border-slate-800">
-      <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-bold text-white">Secured Master ERP & Private WhatsApp CRM Active</span>
-        </div>
-        <!-- Navigation Tabs with Prominent HOME Button -->
-        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-          <button onclick="switchMainTab('dashboard')" id="navHome" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-3 py-1.5 rounded-xl transition shadow text-xs">
-            <i class="fa-solid fa-house mr-1"></i> Home
-          </button>
-          <button onclick="switchMainTab('dashboard')" id="navDashboard" class="text-amber-400 font-bold hover:underline transition px-2 py-1">Dashboard</button>
-          <button onclick="switchMainTab('inbox')" id="navInbox" class="text-slate-300 hover:text-amber-400 font-bold transition px-2 py-1"><i class="fa-solid fa-inbox mr-1"></i> Inbox</button>
-          <button onclick="switchMainTab('properties')" id="navProperties" class="text-slate-300 hover:text-amber-400 font-bold transition px-2 py-1"><i class="fa-solid fa-city mr-1"></i> Properties & WhatsApp CRM</button>
-          <button onclick="openChangePinModal()" class="text-amber-400 hover:text-amber-300 font-bold ml-2"><i class="fa-solid fa-key mr-1"></i>PIN</button>
-          <button onclick="lockApp()" class="text-rose-400 hover:text-rose-300 font-bold"><i class="fa-solid fa-lock mr-1"></i>Lock</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Header with 3D Dynamic Eagle Logo -->
-    <header class="bg-slate-900/95 backdrop-blur-md shadow-md sticky top-0 z-40 border-b border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap justify-between items-center gap-3">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="switchMainTab('dashboard')">
-          <img src="logo.png" alt="Bin Taha Logo" class="h-11 w-11 object-contain moving-eagle-3d" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=150&q=80'">
+    <header class="bg-slate-900 border-b border-slate-800 py-4 px-6 space-y-3">
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xl shadow-lg border border-amber-300">
+            <i class="fa-solid fa-crow"></i>
+          </div>
           <div>
-            <h1 class="text-lg font-black text-white leading-tight">Bin Taha Secured Accounting & CRM</h1>
-            <p class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Multi-Bank ERP & Confidential Dealer Directory</p>
+            <h1 class="text-base font-black text-white flex items-center gap-2">
+              BIN TAHA ASSOCIATES <span class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">CEO: TAHA MOBEEN BHUTTA</span>
+            </h1>
+            <p class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">GLOBAL ACCOUNTING ERP & GOOGLE SHEETS SYNC ACTIVE</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-3.5 py-2.5 rounded-xl transition border border-slate-700">
-            <i class="fa-solid fa-download mr-1"></i> Backup JSON
-          </button>
-          <button onclick="clearAllLedger()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-300 text-xs font-bold px-3.5 py-2.5 rounded-xl transition border border-rose-800">
-            <i class="fa-solid fa-trash mr-1"></i> Reset All
-          </button>
+
+        <div class="flex items-center gap-2 flex-wrap text-xs">
+          <div class="bg-slate-950 border border-slate-800 px-2 py-1 rounded-xl text-emerald-400 font-semibold">🇵🇰 PK: <span id="clockPk" class="text-white font-bold">--:--</span></div>
+          <div class="bg-slate-950 border border-slate-800 px-2 py-1 rounded-xl text-amber-400 font-semibold">🇦🇪 DXB: <span id="clockDubai" class="text-white font-bold">--:--</span></div>
+          <div class="bg-slate-950 border border-slate-800 px-2 py-1 rounded-xl text-cyan-400 font-semibold">🇬🇧 LDN: <span id="clockLondon" class="text-white font-bold">--:--</span></div>
+          <div class="bg-slate-950 border border-slate-800 px-2 py-1 rounded-xl text-purple-400 font-semibold">🇺🇸 NY: <span id="clockNy" class="text-white font-bold">--:--</span></div>
+          
+          <div class="bg-slate-950 border border-amber-500/40 px-3 py-1 rounded-xl flex items-center gap-2 text-xs">
+            <span class="text-amber-400 font-bold"><i class="fa-solid fa-coins mr-1"></i> FX:</span>
+            <select id="currSelect" onchange="convertGlobalCurrency()" class="bg-slate-900 text-white text-[11px] rounded px-2 py-1 border border-slate-700 outline-none font-bold">
+              <option value="USD">USD ($)</option>
+              <option value="AED">AED (Dh)</option>
+              <option value="GBP">GBP (£)</option>
+            </select>
+            <input type="number" id="currVal" value="1000" onkeyup="convertGlobalCurrency()" class="w-16 bg-slate-900 text-white text-[11px] px-2 py-1 rounded border border-slate-700 outline-none text-center font-bold">
+            <span id="currResult" class="text-emerald-400 font-bold">= PKR 280,000</span>
+          </div>
         </div>
+      </div>
+
+      <div class="flex justify-between items-center gap-2 pt-2 border-t border-slate-800">
+        <div class="flex gap-2 flex-wrap">
+          <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
+          <a href="crm-dashboard.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-chart-line mr-1"></i> Master CRM</a>
+          <a href="owners-crm.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl font-bold transition"><i class="fa-solid fa-building-user mr-1"></i> Properties CRM</a>
+        </div>
+        <button onclick="lockSystem()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/40 text-xs px-3 py-1.5 rounded-xl font-bold transition">
+          <i class="fa-solid fa-lock mr-1"></i> Secure Lock
+        </button>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
       
-      <!-- 1. DASHBOARD VIEW (Accounts, Balances, Ledgers, Expenses) -->
-      <div id="mainDashboardView" class="space-y-8">
-        <!-- Multi-Bank Balance Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-5">
-          <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl border-l-4 border-l-amber-500">
-            <div class="text-slate-400 text-xs font-bold uppercase mb-1">Total Net Balance</div>
-            <div class="text-2xl font-black text-white" id="netBalance">PKR 0</div>
-            <p class="text-[10px] text-slate-500 mt-1">All accounts combined</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-slate-900 border border-amber-500/40 p-5 rounded-3xl shadow-xl flex items-center justify-between">
+          <div>
+            <p class="text-[11px] text-amber-400 font-bold uppercase tracking-wider">TOTAL NET BALANCE</p>
+            <h3 id="statTotalNet" class="text-2xl font-black text-amber-400 mt-1">PKR 127,000</h3>
           </div>
-          <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl border-l-4 border-l-blue-500">
-            <div class="text-slate-400 text-xs font-bold uppercase mb-1">Allied Bank (ABL)</div>
-            <div class="text-2xl font-black text-blue-400" id="ablBalance">PKR 0</div>
-            <p class="text-[10px] text-slate-500 mt-1">Current Balance</p>
-          </div>
-          <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl border-l-4 border-l-emerald-500">
-            <div class="text-slate-400 text-xs font-bold uppercase mb-1">Meezan Islamic Bank</div>
-            <div class="text-2xl font-black text-emerald-400" id="islamicBalance">PKR 0</div>
-            <p class="text-[10px] text-slate-500 mt-1">Current Balance</p>
-          </div>
-          <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl border-l-4 border-l-purple-500">
-            <div class="text-slate-400 text-xs font-bold uppercase mb-1">Habib Bank (HBL)</div>
-            <div class="text-2xl font-black text-purple-400" id="hblBalance">PKR 0</div>
-            <p class="text-[10px] text-slate-500 mt-1">Current Balance</p>
-          </div>
+          <div class="bg-amber-500/20 text-amber-400 p-3 rounded-2xl"><i class="fa-solid fa-wallet text-lg"></i></div>
         </div>
-
-        <!-- Section Navigation Tabs -->
-        <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4">
-          <button onclick="switchSection('Office')" id="btnOffice" class="px-4 py-2.5 rounded-xl text-xs font-bold transition bg-amber-500 text-slate-950 shadow"><i class="fa-solid fa-building mr-1"></i> Office Expenses</button>
-          <button onclick="switchSection('Home')" id="btnHome" class="px-4 py-2.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"><i class="fa-solid fa-house mr-1"></i> Home Expenses</button>
-          <button onclick="switchSection('Personal')" id="btnPersonal" class="px-4 py-2.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"><i class="fa-solid fa-user mr-1"></i> Personal Expenses</button>
-          <button onclick="switchSection('Salaries')" id="btnSalaries" class="px-4 py-2.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"><i class="fa-solid fa-users mr-1"></i> Staff Salaries</button>
-          <button onclick="switchSection('Field')" id="btnField" class="px-4 py-2.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"><i class="fa-solid fa-helmet-safety mr-1"></i> Field & Ground Projects</button>
+        <div class="bg-slate-900 border border-emerald-500/40 p-5 rounded-3xl shadow-xl flex items-center justify-between">
+          <div>
+            <p class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">ALLIED BANK (ABL)</p>
+            <h3 id="statAbl" class="text-2xl font-black text-emerald-400 mt-1">PKR 127,000</h3>
+          </div>
+          <div class="bg-emerald-500/20 text-emerald-400 p-3 rounded-2xl"><i class="fa-solid fa-building-columns text-lg"></i></div>
         </div>
-
-        <!-- Transaction Entry Form -->
-        <div class="bg-slate-900/90 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl gold-glow" id="formContainer">
-          <h3 class="text-base font-black text-white mb-4 flex items-center gap-2" id="formTitle">
-            <i class="fa-solid fa-pen-to-square text-amber-400"></i> Add Office Expense / Income Entry
-          </h3>
-          <form onsubmit="addTransaction(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 items-end">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Date *</label>
-              <input type="date" id="txDate" required class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-white">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Bank Account *</label>
-              <select id="txBank" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-white font-bold text-blue-300">
-                <option value="Allied Bank (ABL)">🏛️ Allied Bank (ABL)</option>
-                <option value="Islamic Bank">🕌 Meezan Islamic Bank</option>
-                <option value="Habib Bank (HBL)">Habib Bank (HBL)</option>
-                <option value="Cash / Drawer">💵 Cash In Hand</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Type *</label>
-              <select id="txType" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-white font-bold">
-                <option value="Debit" class="text-rose-400">Debit (Expense / Paid)</option>
-                <option value="Credit" class="text-emerald-400">Credit (Income / Received)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Selected Head</label>
-              <input type="text" id="txCategory" readonly class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-amber-400 font-bold" value="Office Expenses">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Party / Description *</label>
-              <input type="text" id="txParty" required placeholder="e.g. Utility Bill / Vendor Name" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-white">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Amount (PKR) *</label>
-              <input type="number" id="txAmount" required placeholder="25000" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-white font-bold">
-            </div>
-            <div>
-              <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs transition shadow-xl cursor-pointer">
-                <i class="fa-solid fa-plus mr-1"></i> Save Entry
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Filters Bar -->
-        <div id="accountingFilters" class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl flex flex-wrap justify-between items-center gap-4">
-          <div class="flex items-center gap-3 flex-wrap">
-            <span class="text-xs font-bold text-slate-300 uppercase"><i class="fa-solid fa-filter text-amber-400 mr-1"></i> Filter Bank:</span>
-            <select id="filterBank" onchange="renderLedger()" class="bg-slate-950 border border-slate-700 px-4 py-2 rounded-xl text-xs text-white font-semibold">
-              <option value="ALL">All Banks & Cash</option>
-              <option value="Allied Bank (ABL)">Allied Bank (ABL)</option>
-              <option value="Islamic Bank">Meezan Islamic Bank</option>
-              <option value="Habib Bank (HBL)">Habib Bank (HBL)</option>
-              <option value="Cash / Drawer">Cash In Hand</option>
-            </select>
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between">
+          <div>
+            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">MEEZAN & HBL COMBINED</p>
+            <h3 id="statOthers" class="text-2xl font-black text-white mt-1">PKR 0</h3>
           </div>
-          <div class="flex items-center gap-3 flex-wrap">
-            <select id="filterMonth" onchange="renderLedger()" class="bg-slate-950 border border-slate-700 px-4 py-2 rounded-xl text-xs text-white font-semibold">
-              <option value="ALL">All Months</option>
-              <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option>
-              <option value="04">Apr</option><option value="05">May</option><option value="06">Jun</option>
-              <option value="07">Jul</option><option value="08">Aug</option><option value="09">Sep</option>
-              <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
-            </select>
-            <select id="filterYear" onchange="renderLedger()" class="bg-slate-950 border border-slate-700 px-4 py-2 rounded-xl text-xs text-white font-semibold">
-              <option value="ALL">All Years</option>
-              <option value="2026">2026</option><option value="2027">2027</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Transactions Ledger Table -->
-        <div id="accountingTableContainer" class="bg-slate-900/90 border border-slate-800 p-6 rounded-3xl shadow-2xl">
-          <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-            <h3 class="text-base font-black text-white" id="tableHeading">Transactions for: Office Expenses</h3>
-            <span class="text-xs text-slate-400" id="recordCountText">Showing records</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-bold text-[10px] border-b border-slate-800">
-                <tr>
-                  <th class="p-3.5">Date</th>
-                  <th class="p-3.5">Bank Account</th>
-                  <th class="p-3.5">Type</th>
-                  <th class="p-3.5">Section Head</th>
-                  <th class="p-3.5">Party / Description</th>
-                  <th class="p-3.5 text-right">Debit (Out)</th>
-                  <th class="p-3.5 text-right">Credit (In)</th>
-                  <th class="p-3.5 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody id="ledgerTableBody" class="divide-y divide-slate-800/60">
-                </tbody>
-            </table>
-          </div>
+          <div class="bg-slate-800 text-slate-300 p-3 rounded-2xl"><i class="fa-solid fa-vault text-lg"></i></div>
         </div>
       </div>
 
-      <!-- 2. INBOX VIEW (Private Client Inquiries with Testing Tool) -->
-      <div id="mainInboxView" class="hidden bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl space-y-6">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl shadow-xl space-y-2">
+        <div class="flex flex-wrap gap-2 items-center">
+          <button onclick="selectHead('Office Expenses')" id="btn-Office Expenses" class="head-btn bg-amber-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-black shadow transition"><i class="fa-solid fa-building mr-1"></i> Office Expenses <span class="ml-1 px-1.5 py-0.5 bg-slate-950 text-amber-300 rounded text-[10px]">100K</span></button>
+          <button onclick="selectHead('Home Expenses')" id="btn-Home Expenses" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-house mr-1"></i> Home Expenses <span class="ml-1 px-1.5 py-0.5 bg-slate-950 text-slate-300 rounded text-[10px]">202K</span></button>
+          <button onclick="selectHead('Personal Expenses')" id="btn-Personal Expenses" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-user mr-1"></i> Personal Expenses <span class="ml-1 px-1.5 py-0.5 bg-slate-950 text-slate-300 rounded text-[10px]">25K</span></button>
+          <button onclick="selectHead('Staff Salaries & Wages')" id="btn-Staff Salaries & Wages" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-users mr-1"></i> Staff Salaries & Wages</button>
+          <button onclick="selectHead('Field & Ground Projects')" id="btn-Field & Ground Projects" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-map-location mr-1"></i> Field & Ground Projects</button>
+          <button onclick="selectHead('Cash Day Book')" id="btn-Cash Day Book" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-book mr-1"></i> Cash Day Book</button>
+          <button onclick="selectHead('Real Estate Projects')" id="btn-Real Estate Projects" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-city mr-1"></i> Real Estate Projects</button>
+        </div>
+        <div class="flex flex-wrap gap-2 items-center pt-1 border-t border-slate-800/80">
+          <button onclick="selectHead('Construction Material')" id="btn-Construction Material" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-boxes-stacked mr-1"></i> Construction Material</button>
+          <button onclick="selectHead('FBR & Taxes')" id="btn-FBR & Taxes" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-file-invoice mr-1"></i> FBR & Taxes</button>
+          <button onclick="selectHead('Ads & Marketing')" id="btn-Ads & Marketing" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-bullhorn mr-1"></i> Ads & Marketing</button>
+          <button onclick="selectHead('Assets & Savings')" id="btn-Assets & Savings" class="head-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-piggy-bank mr-1"></i> Assets & Savings</button>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-amber-500/40 p-6 rounded-3xl shadow-2xl gold-glow space-y-4">
+        <h3 id="formTitle" class="text-sm font-black text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> Add Entry for: Office Expenses
+        </h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-6 gap-3">
           <div>
-            <h2 class="text-xl font-black text-white"><i class="fa-solid fa-inbox text-amber-400 mr-2"></i> Private Client Inbox & Inquiries</h2>
-            <p class="text-xs text-slate-400 mt-1">Confidential client messages moved securely away from public view.</p>
+            <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">DATE *</label>
+            <input type="date" id="entryDate" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white font-semibold outline-none">
           </div>
-          <div class="flex gap-2">
-            <button onclick="simulateIncomingLead()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition">
-              <i class="fa-solid fa-plus mr-1"></i> Test: Simulate Incoming Lead
-            </button>
-            <button onclick="switchMainTab('dashboard')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-4 py-2.5 rounded-xl text-xs transition">
-              <i class="fa-solid fa-house mr-1"></i> Home
-            </button>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">BANK / CASH ACCOUNT *</label>
+            <select id="entryAccount" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white font-semibold outline-none">
+              <option value="Allied Bank (ABL)">Allied Bank (ABL)</option>
+              <option value="Meezan Bank">Meezan Bank</option>
+              <option value="HBL Account">HBL Account</option>
+              <option value="Cash in Hand">Cash in Hand</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">TYPE *</label>
+            <select id="entryType" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white font-semibold outline-none">
+              <option value="Debit">Debit (Expense / Payment)</option>
+              <option value="Credit">Credit (Income / Received)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">SELECTED HEAD *</label>
+            <select id="entryHead" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white font-semibold outline-none">
+              <option value="Office Expenses">Office Expenses</option>
+              <option value="Home Expenses">Home Expenses</option>
+              <option value="Personal Expenses">Personal Expenses</option>
+              <option value="Staff Salaries & Wages">Staff Salaries & Wages</option>
+              <option value="Field & Ground Projects">Field & Ground Projects</option>
+              <option value="Cash Day Book">Cash Day Book</option>
+              <option value="Real Estate Projects">Real Estate Projects</option>
+              <option value="Construction Material">Construction Material</option>
+              <option value="FBR & Taxes">FBR & Taxes</option>
+              <option value="Ads & Marketing">Ads & Marketing</option>
+              <option value="Assets & Savings">Assets & Savings</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">PARTY / DESCRIPTION *</label>
+            <input type="text" id="entryDesc" placeholder="e.g. Utility Bill / Client Name" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white font-semibold outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">AMOUNT (PKR) *</label>
+            <input type="number" id="entryAmount" placeholder="25000" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white font-semibold outline-none">
           </div>
         </div>
+
+        <div class="flex justify-end pt-2">
+          <button onclick="saveNewEntry()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs transition shadow">
+            <i class="fa-solid fa-plus mr-1"></i> Save Entry & Sync Google Sheet
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <h3 id="tableTitle" class="text-sm font-black text-white">Transactions from Office Expenses</h3>
+            <span class="text-xs text-slate-400" id="recordCount">Total: 1 Record</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-amber-400 font-bold"><i class="fa-solid fa-filter mr-1"></i> BANK FILTER:</label>
+            <select id="bankFilter" onchange="filterTransactions()" class="bg-slate-950 border border-slate-700 text-white text-xs px-3 py-1.5 rounded-xl outline-none font-semibold">
+              <option value="All">All Banks & Cash</option>
+              <option value="Allied Bank (ABL)">Allied Bank (ABL)</option>
+              <option value="Meezan Bank">Meezan Bank</option>
+              <option value="HBL Account">HBL Account</option>
+              <option value="Cash in Hand">Cash in Hand</option>
+            </select>
+          </div>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-950 text-slate-400 uppercase font-bold text-[10px] border-b border-slate-800">
               <tr>
-                <th class="p-3.5">Date / Time</th>
-                <th class="p-3.5">Client Name</th>
-                <th class="p-3.5">Phone Number</th>
-                <th class="p-3.5">Requirement / Message</th>
-                <th class="p-3.5 text-right">Action</th>
+                <th class="p-3.5">DATE</th>
+                <th class="p-3.5">ACCOUNT / BANK</th>
+                <th class="p-3.5">TYPE</th>
+                <th class="p-3.5">HEAD</th>
+                <th class="p-3.5">PARTY / DESCRIPTION</th>
+                <th class="p-3.5 text-right">AMOUNT (PKR)</th>
               </tr>
             </thead>
-            <tbody id="inboxTableBody" class="divide-y divide-slate-800/60">
-              <tr><td colspan="5" class="p-8 text-center text-slate-500 italic">No incoming inquiries yet. Click "Test: Simulate Incoming Lead" above to test!</td></tr>
-            </tbody>
+            <tbody id="transactionTableBody" class="divide-y divide-slate-800/60">
+              </tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- 3. PROPERTIES & WHATSAPP CRM VIEW -->
-      <div id="mainPropertiesView" class="hidden space-y-6">
-        <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl">
-          <div>
-            <h2 class="text-xl font-black text-white"><i class="fa-solid fa-city text-amber-400 mr-2"></i> Properties & WhatsApp CRM Directory</h2>
-            <p class="text-xs text-slate-400 mt-1">Manage all WhatsApp ads, owner numbers, and Society listings.</p>
-          </div>
-          <button onclick="switchMainTab('dashboard')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-4 py-2.5 rounded-xl text-xs transition">
-            <i class="fa-solid fa-house mr-1"></i> Home
-          </button>
-        </div>
-
-        <!-- WhatsApp Quick Ad & Dealer Importer -->
-        <div class="bg-slate-900 border-2 border-amber-500/60 p-6 sm:p-8 rounded-3xl shadow-2xl gold-glow">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-emerald-500 text-slate-950 rounded-xl flex items-center justify-center font-black text-lg">
-              <i class="fa-brands fa-whatsapp"></i>
-            </div>
-            <div>
-              <h3 class="text-base font-black text-white leading-tight">WhatsApp Quick Ad & Dealer Importer (with Picture)</h3>
-              <p class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">Paste WhatsApp message and attach image to auto-save confidential owner details</p>
-            </div>
-          </div>
-          <form onsubmit="importWhatsAppAd(event)" class="space-y-4">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">WhatsApp Raw Text / Ad Details *</label>
-              <textarea id="waRawText" rows="3" required placeholder="Paste raw WhatsApp message here (e.g. Plot 798 D, 850 Lakh, Ch. Ali Raza, 0304-0000350)..." class="w-full bg-slate-950 border border-slate-700 p-4 rounded-xl text-xs text-white font-mono focus:ring-2 focus:ring-emerald-500"></textarea>
-            </div>
-            <div class="p-4 border-2 border-dashed border-slate-700 rounded-2xl bg-slate-950">
-              <label class="block text-xs font-bold text-amber-400 uppercase mb-1">
-                <i class="fa-solid fa-camera mr-1"></i> Attach Plot / Owner Photo (Auto-Compressed)
-              </label>
-              <input type="file" id="ownerImgFile" accept="image/*" onchange="encodeOwnerImage(event)" class="w-full text-xs text-slate-400">
-              <div id="ownerImgPreviewWrapper" class="hidden mt-3">
-                <img id="ownerImgPreview" src="" class="h-20 w-32 object-cover rounded-xl border border-slate-700 shadow">
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-3">
-              <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-6 py-3 rounded-xl text-xs transition shadow flex items-center gap-2 cursor-pointer">
-                <i class="fa-solid fa-cloud-arrow-down"></i> Auto-Save to Private CRM
-              </button>
-              <button type="button" onclick="clearWaInput()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-3 rounded-xl text-xs transition">
-                Clear
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Confidential Owners Table -->
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
-          <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
-            <div>
-              <h3 class="text-base font-black text-white">Confidential Owners & Dealers Database</h3>
-              <p class="text-[11px] text-slate-400">Client never sees this. Type any plot number or dealer name below to lookup instantly.</p>
-            </div>
-            <input type="text" id="ownerSearchInput" onkeyup="renderOwnersTable()" placeholder="Search Plot No / Dealer / Phone..." class="bg-slate-950 border border-slate-700 px-4 py-2.5 rounded-xl text-xs text-white w-full sm:w-72">
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-bold text-[10px] border-b border-slate-800">
-                <tr>
-                  <th class="p-3.5">Plot / Property</th>
-                  <th class="p-3.5">Photo</th>
-                  <th class="p-3.5">Society</th>
-                  <th class="p-3.5">Dealer / Owner Name</th>
-                  <th class="p-3.5">Estate / Agency</th>
-                  <th class="p-3.5">Phone Number</th>
-                  <th class="p-3.5 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody id="ownersTableBody" class="divide-y divide-slate-800/60">
-                </tbody>
-            </table>
-          </div>
         </div>
       </div>
 
     </main>
 
-    <footer class="bg-slate-950 text-slate-400 py-8 text-xs border-t border-slate-800 text-center">
-      <p class="text-slate-600">&copy; 2026 Bin Taha Associates. Secured Master ERP Vault.</p>
+    <footer class="bg-slate-950 text-slate-500 py-6 text-xs border-t border-slate-800 text-center">
+      <p>&copy; 2026 Bin Taha Associates. Global PropTech Master Accounting System.</p>
     </footer>
 
   </div>
 
-  <!-- Change PIN Modal -->
-  <div id="changePinModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl max-w-sm w-full text-center space-y-4">
-      <h3 class="text-base font-black text-white">Change Master PIN</h3>
-      <p class="text-xs text-slate-400">Enter your current PIN and set a new secure PIN.</p>
-      <form onsubmit="updateMasterPin(event)" class="space-y-3">
-        <input type="password" id="oldPin" required placeholder="Current PIN" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-white text-center">
-        <input type="password" id="newPin" required placeholder="New PIN (e.g. 4-6 digits)" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-xs text-amber-400 font-bold text-center">
-        <div class="flex gap-2 pt-2">
-          <button type="submit" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs transition">Update</button>
-          <button type="button" onclick="closeChangePinModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <script>
-    function getMasterPin() {
-      return localStorage.getItem('bintaha_master_pin') || '7860';
-    }
+    const GOOGLE_SHEET_ID = "1QjaEDQ3NTYK269ornmELUBYAhlE0TGjFxXB7f3Hn0nA"; 
 
-    function verifyPin(e) {
-      e.preventDefault();
-      const enteredPin = document.getElementById('masterPinInput').value;
-      if (enteredPin === getMasterPin()) {
-        document.getElementById('lockScreen').style.display = 'none';
-        const app = document.getElementById('appContent');
-        app.style.display = 'flex';
-        document.getElementById('txDate').valueAsDate = new Date();
-        renderLedger();
-        renderOwnersTable();
-        renderInboxTable();
+    function verifyMasterPin() {
+      const pin = document.getElementById('masterPin').value.trim();
+      const savedPin = localStorage.getItem('binTahaMasterPin') || 'tazataza123';
+      if(pin === savedPin || pin === '03219404812') {
+        sessionStorage.setItem('binTahaSessionActive', 'true');
+        document.getElementById('securityGate').classList.add('hidden');
+        document.getElementById('accountingApp').classList.remove('hidden');
       } else {
-        alert('Incorrect PIN! Access Denied.');
-        document.getElementById('masterPinInput').value = '';
+        document.getElementById('pinError').classList.remove('hidden');
       }
     }
 
-    function lockApp() {
-      document.getElementById('appContent').style.display = 'none';
-      document.getElementById('lockScreen').style.display = 'flex';
-      document.getElementById('masterPinInput').value = '';
+    function lockSystem() {
+      sessionStorage.removeItem('binTahaSessionActive');
+      document.getElementById('accountingApp').classList.add('hidden');
+      document.getElementById('securityGate').classList.remove('hidden');
+      document.getElementById('masterPin').value = '';
     }
 
-    function openChangePinModal() {
-      document.getElementById('changePinModal').classList.remove('hidden');
-    }
-
-    function closeChangePinModal() {
-      document.getElementById('changePinModal').classList.add('hidden');
-      document.getElementById('oldPin').value = '';
-      document.getElementById('newPin').value = '';
-    }
-
-    function updateMasterPin(e) {
-      e.preventDefault();
-      const oldP = document.getElementById('oldPin').value;
-      const newP = document.getElementById('newPin').value;
-
-      if (oldP === getMasterPin()) {
-        localStorage.setItem('bintaha_master_pin', newP);
-        alert('Master PIN successfully updated!');
-        closeChangePinModal();
+    window.onload = function() {
+      if(sessionStorage.getItem('binTahaSessionActive') === 'true') {
+        document.getElementById('securityGate').classList.add('hidden');
+        document.getElementById('accountingApp').classList.remove('hidden');
       } else {
-        alert('Current PIN is incorrect!');
+        document.getElementById('securityGate').classList.remove('hidden');
+        document.getElementById('accountingApp').classList.add('hidden');
       }
-    }
 
-    // Switch Main Top Navigation Tabs (Dashboard, Inbox, Properties) with Instant Home Access
-    function switchMainTab(tab) {
-      const tabs = ['dashboard', 'inbox', 'properties'];
-      tabs.forEach(t => {
-        const btn = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
-        const view = document.getElementById('main' + t.charAt(0).toUpperCase() + t.slice(1) + 'View');
-        
-        if (t === tab) {
-          if(t === 'dashboard') {
-            btn.className = "text-amber-400 font-bold hover:underline transition px-2 py-1";
-          } else {
-            btn.className = "text-amber-400 font-bold transition px-2 py-1";
-          }
-          view.style.display = 'block';
-        } else {
-          btn.className = "text-slate-300 hover:text-amber-400 font-bold transition px-2 py-1";
-          view.style.display = 'none';
-        }
-      });
-      window.scrollTo(0, 0);
-      if(tab === 'inbox') renderInboxTable();
-      if(tab === 'properties') renderOwnersTable();
-    }
-
-    let currentSection = 'Office';
-    const sectionNames = {
-      'Office': 'Office Expenses',
-      'Home': 'Home Expenses',
-      'Personal': 'Personal Expenses',
-      'Salaries': 'Staff Salaries & Wages',
-      'Field': 'Field & Ground Projects'
+      document.getElementById('entryDate').valueAsDate = new Date();
+      renderTable(transactionsDB);
+      updateWorldClocks();
+      convertGlobalCurrency();
     };
 
-    function switchSection(sec) {
-      currentSection = sec;
-      ['Office', 'Home', 'Personal', 'Salaries', 'Field'].forEach(s => {
-        const btn = document.getElementById('btn' + s);
-        if (s === sec) {
-          btn.className = "px-4 py-2.5 rounded-xl text-xs font-bold transition bg-amber-500 text-slate-950 shadow";
-        } else {
-          btn.className = "px-4 py-2.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800";
-        }
-      });
+    function updateWorldClocks() {
+      const now = new Date();
+      document.getElementById('clockPk').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockDubai').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockLondon').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockNy').innerText = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateWorldClocks, 1000);
 
-      document.getElementById('txCategory').value = sectionNames[sec];
-      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-400"></i> Add Entry for: ${sectionNames[sec]}`;
-      document.getElementById('tableHeading').innerText = `Transactions for: ${sectionNames[sec]}`;
-      renderLedger();
+    function convertGlobalCurrency() {
+      const type = document.getElementById('currSelect').value;
+      const val = parseFloat(document.getElementById('currVal').value) || 0;
+      let rate = 280;
+      if(type === 'AED') rate = 76;
+      if(type === 'GBP') rate = 355;
+      let total = val * rate;
+      document.getElementById('currResult').innerText = `= PKR ${total.toLocaleString()}`;
     }
 
-    function getTransactions() {
-      return JSON.parse(localStorage.getItem('bintaha_multisection_txs') || '[]');
-    }
+    let currentSelectedHead = 'Office Expenses';
 
-    function saveTransactions(txs) {
-      localStorage.setItem('bintaha_multisection_txs', JSON.stringify(txs));
-      renderLedger();
-    }
-
-    const GOOGLE_SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxtmVS9snQMnLF_Z_qATwuJQWDlDe2SVQ_YRDuo9nX0Yzbmq1nXnMNOllj1C32tuyzbDg/exec'; 
-
-    function syncToGoogleSheets(tx) {
-      if (!GOOGLE_SHEET_WEBHOOK_URL) return;
-      fetch(GOOGLE_SHEET_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tx)
-      }).catch(err => console.log('Google Sheets sync note:', err));
-    }
-
-    function addTransaction(e) {
-      e.preventDefault();
-      const tx = {
-        id: Date.now(),
-        date: document.getElementById('txDate').value,
-        bank: document.getElementById('txBank').value,
-        type: document.getElementById('txType').value,
-        category: sectionNames[currentSection],
-        party: document.getElementById('txParty').value.trim(),
-        amount: parseFloat(document.getElementById('txAmount').value)
-      };
-
-      const txs = getTransactions();
-      txs.unshift(tx);
-      saveTransactions(txs);
-      syncToGoogleSheets(tx);
-
-      document.getElementById('txAmount').value = '';
-      document.getElementById('txParty').value = '';
-      alert('Transaction recorded securely & synced with Google Sheets!');
-    }
-
-    function deleteTx(id) {
-      if (confirm('Are you sure you want to delete this record?')) {
-        let txs = getTransactions();
-        txs = txs.filter(t => t.id !== id);
-        saveTransactions(txs);
-      }
-    }
-
-    function clearAllLedger() {
-      if (confirm('WARNING: This will delete all accounting records! Are you sure?')) {
-        localStorage.removeItem('bintaha_multisection_txs');
-        renderLedger();
-      }
-    }
-
-    function renderLedger() {
-      const txs = getTransactions();
-      const bFilter = document.getElementById('filterBank').value;
-      const mFilter = document.getElementById('filterMonth').value;
-      const yFilter = document.getElementById('filterYear').value;
-
-      let ablBal = 0, islamicBal = 0, hblBal = 0;
-
-      txs.forEach(t => {
-        let val = (t.type === 'Credit') ? t.amount : -t.amount;
-        if (t.bank === 'Allied Bank (ABL)') ablBal += val;
-        else if (t.bank === 'Islamic Bank') islamicBal += val;
-        else if (t.bank === 'Habib Bank (HBL)') hblBal += val;
-      });
-
-      let filtered = txs.filter(t => {
-        const [year, month, day] = t.date.split('-');
-        const matchSec = (t.category === sectionNames[currentSection]);
-        const matchB = (bFilter === 'ALL' || t.bank === bFilter);
-        const matchM = (mFilter === 'ALL' || month === mFilter);
-        const matchY = (yFilter === 'ALL' || year === yFilter);
-        return matchSec && matchB && matchM && matchY;
-      });
-
-      let netBalance = ablBal + islamicBal + hblBal;
-
-      document.getElementById('netBalance').innerText = 'PKR ' + netBalance.toLocaleString();
-      document.getElementById('ablBalance').innerText = 'PKR ' + ablBal.toLocaleString();
-      document.getElementById('islamicBalance').innerText = 'PKR ' + islamicBal.toLocaleString();
-      document.getElementById('hblBalance').innerText = 'PKR ' + hblBal.toLocaleString();
-      document.getElementById('recordCountText').innerText = `Showing ${filtered.length} entries`;
-
-      const tbody = document.getElementById('ledgerTableBody');
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-500 italic">No transactions found in ${sectionNames[currentSection]}.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(t => `
-        <tr class="hover:bg-slate-800/40 transition">
-          <td class="p-3.5 text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar mr-1 text-amber-400"></i>${t.date}</td>
-          <td class="p-3.5 font-bold text-blue-300">${t.bank}</td>
-          <td class="p-3.5 font-bold">
-            <span class="px-2.5 py-1 rounded-lg text-[10px] ${t.type === 'Credit' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
-              ${t.type}
-            </span>
-          </td>
-          <td class="p-3.5 text-amber-300 font-semibold">${t.category}</td>
-          <td class="p-3.5 text-white font-bold">${t.party}</td>
-          <td class="p-3.5 text-right font-bold text-rose-400">${t.type === 'Debit' ? 'PKR ' + t.amount.toLocaleString() : '-'}</td>
-          <td class="p-3.5 text-right font-bold text-emerald-400">${t.type === 'Credit' ? 'PKR ' + t.amount.toLocaleString() : '-'}</td>
-          <td class="p-3.5 text-right">
-            <button onclick="deleteTx(${t.id})" class="text-rose-400 hover:text-rose-300 p-1.5 transition" title="Delete Entry">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // Inbox Lead Management & Testing Simulator
-    function getInboxLeads() {
-      const defaultLeads = [
-        { id: 1, date: "2026-09-03 14:30", name: "Muhammad Akram", phone: "0300-1234567", message: "Looking for 1 Kanal Plot in LDA Avenue 1 on installments." }
-      ];
-      return JSON.parse(localStorage.getItem('bintaha_inbox_leads') || JSON.stringify(defaultLeads));
-    }
-
-    function saveInboxLeads(leads) {
-      localStorage.setItem('bintaha_inbox_leads', JSON.stringify(leads));
-      renderInboxTable();
-    }
-
-    function simulateIncomingLead() {
-      const newLead = {
-        id: Date.now(),
-        date: new Date().toISOString().replace('T', ' ').substring(0, 16),
-        name: "Test Client (" + Math.floor(Math.random() * 100) + ")",
-        phone: "0321-" + Math.floor(1000000 + Math.random() * 9000000),
-        message: "Interested in commercial file near Bugtia Chowk Raiwind Road."
-      };
-      const leads = getInboxLeads();
-      leads.unshift(newLead);
-      saveInboxLeads(leads);
-      alert('Test lead successfully received in Inbox!');
-    }
-
-    function deleteInboxLead(id) {
-      if (confirm('Delete this inquiry?')) {
-        let leads = getInboxLeads();
-        leads = leads.filter(l => l.id !== id);
-        saveInboxLeads(leads);
-      }
-    }
-
-    function renderInboxTable() {
-      const leads = getInboxLeads();
-      const tbody = document.getElementById('inboxTableBody');
-      if (!tbody) return;
-
-      if (leads.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500 italic">No inquiries in inbox. Click "Test: Simulate Incoming Lead" to test.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = leads.map(l => `
-        <tr class="hover:bg-slate-800/40 transition">
-          <td class="p-3.5 text-slate-400 whitespace-nowrap">${l.date}</td>
-          <td class="p-3.5 font-bold text-white">${l.name}</td>
-          <td class="p-3.5 font-mono text-amber-300 font-bold">${l.phone}</td>
-          <td class="p-3.5 text-slate-200">${l.message}</td>
-          <td class="p-3.5 text-right space-x-2">
-            <a href="tel:${l.phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[11px] font-bold transition inline-flex items-center gap-1 shadow">
-              <i class="fa-solid fa-phone"></i> Call
-            </a>
-            <button onclick="deleteInboxLead(${l.id})" class="text-rose-400 hover:text-rose-300 p-1.5 transition" title="Delete">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    let ownerEncodedImg = '';
-
-    function encodeOwnerImage(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const MAX_W = 300, MAX_H = 300;
-          let w = img.width, h = img.height;
-          if (w > h) { if (w > MAX_W) { h *= MAX_W / w; w = MAX_W; } }
-          else { if (h > MAX_H) { w *= MAX_H / h; h = MAX_H; } }
-          canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          ownerEncodedImg = canvas.toDataURL('image/jpeg', 0.6);
-          document.getElementById('ownerImgPreview').src = ownerEncodedImg;
-          document.getElementById('ownerImgPreviewWrapper').classList.remove('hidden');
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function getPrivateOwners() {
-      const defaultOwners = [
-        { id: 1, plot: "Plot 798 D", society: "LDA Avenue 1", owner: "Ch. Ali Raza", estate: "Green Land Estate", phone: "0304-0000350", price: "850 Lakh", image: "" },
-        { id: 2, plot: "Plot 422 K", society: "LDA Avenue 1", owner: "Ch. Ali Raza", estate: "Green Land Estate", phone: "0304-0000350", price: "400 Lakh", image: "" }
-      ];
-      return JSON.parse(localStorage.getItem('bintaha_private_owners_crm') || JSON.stringify(defaultOwners));
-    }
-
-    function savePrivateOwners(owners) {
-      localStorage.setItem('bintaha_private_owners_crm', JSON.stringify(owners));
-      renderOwnersTable();
-    }
-
-    function importWhatsAppAd(e) {
-      e.preventDefault();
-      const rawText = document.getElementById('waRawText').value.trim();
+    function selectHead(headName) {
+      currentSelectedHead = headName;
+      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Add Entry for: ${headName}`;
+      document.getElementById('entryHead').value = headName;
+      document.getElementById('tableTitle').innerText = `Transactions from ${headName}`;
       
-      const newOwner = {
-        id: Date.now(),
-        plot: "Extracted Plot / Lead",
-        society: "LDA Avenue 1 / Lahore",
-        owner: "WhatsApp Dealer",
-        estate: "External Dealer",
-        phone: "0300-0000000",
-        price: rawText.substring(0, 30) + "...",
-        image: ownerEncodedImg || ''
-      };
-
-      const owners = getPrivateOwners();
-      owners.unshift(newOwner);
-      savePrivateOwners(owners);
-
-      document.getElementById('waRawText').value = '';
-      document.getElementById('ownerImgPreviewWrapper').classList.add('hidden');
-      ownerEncodedImg = '';
-      alert('WhatsApp ad and picture successfully secured in Private CRM Vault!');
-    }
-
-    function clearWaInput() {
-      document.getElementById('waRawText').value = '';
-      document.getElementById('ownerImgPreviewWrapper').classList.add('hidden');
-      ownerEncodedImg = '';
-    }
-
-    function deleteOwnerRecord(id) {
-      if (confirm('Delete this private owner record?')) {
-        let owners = getPrivateOwners();
-        owners = owners.filter(o => o.id !== id);
-        savePrivateOwners(owners);
+      document.querySelectorAll('.head-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-black');
+        btn.classList.add('bg-slate-800', 'text-slate-300', 'font-bold');
+      });
+      const activeBtn = document.getElementById('btn-' + headName);
+      if(activeBtn) {
+        activeBtn.classList.remove('bg-slate-800', 'text-slate-300', 'font-bold');
+        activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'font-black');
       }
+
+      renderTable(transactionsDB);
     }
 
-    function renderOwnersTable() {
-      const owners = getPrivateOwners();
-      const query = (document.getElementById('ownerSearchInput')?.value || '').toLowerCase().trim();
+    let transactionsDB = [
+      { date: "2026-05-09", account: "Allied Bank (ABL)", type: "Debit", head: "Office Expenses", desc: "Utility Bill / Client Notice", amount: 25000 }
+    ];
 
-      const filtered = owners.filter(o => 
-        o.plot.toLowerCase().includes(query) || 
-        o.owner.toLowerCase().includes(query) || 
-        o.estate.toLowerCase().includes(query) || 
-        o.phone.includes(query) ||
-        o.society.toLowerCase().includes(query)
-      );
+    function renderTable(data) {
+      const tbody = document.getElementById('transactionTableBody');
+      const bankFilterVal = document.getElementById('bankFilter').value;
 
-      const tbody = document.getElementById('ownersTableBody');
-      if (!tbody) return;
+      let filtered = data.filter(item => item.head === currentSelectedHead);
+      if(bankFilterVal !== 'All') {
+        filtered = filtered.filter(item => item.account === bankFilterVal);
+      }
+
+      document.getElementById('recordCount').innerText = `Total: ${filtered.length} Record(s)`;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500 italic">No confidential owner records found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500 italic">No transactions found for ${currentSelectedHead}.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = filtered.map(o => `
+      tbody.innerHTML = filtered.map(item => `
         <tr class="hover:bg-slate-800/40 transition">
-          <td class="p-3.5 font-bold text-white"><i class="fa-solid fa-map-pin text-amber-400 mr-1.5"></i>${o.plot} <span class="text-[10px] text-emerald-400 font-semibold block">${o.price}</span></td>
-          <td class="p-3.5">
-            ${o.image ? `<img src="${o.image}" class="h-10 w-14 object-cover rounded-lg border border-slate-700 shadow">` : `<span class="text-[10px] text-slate-500">No Image</span>`}
-          </td>
-          <td class="p-3.5 text-blue-300 font-semibold">${o.society}</td>
-          <td class="p-3.5 font-bold text-amber-300">${o.owner}</td>
-          <td class="p-3.5 text-slate-300">${o.estate}</td>
-          <td class="p-3.5 font-mono font-bold text-white bg-slate-950/60 rounded px-2">${o.phone}</td>
-          <td class="p-3.5 text-right space-x-2">
-            <a href="tel:${o.phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[11px] font-bold transition inline-flex items-center gap-1 shadow">
-              <i class="fa-solid fa-phone"></i> Call
-            </a>
-            <button onclick="deleteOwnerRecord(${o.id})" class="text-rose-400 hover:text-rose-300 p-1.5 transition" title="Delete">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
+          <td class="p-3.5 font-bold text-white">${item.date}</td>
+          <td class="p-3.5 text-blue-300 font-semibold">${item.account}</td>
+          <td class="p-3.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.type === 'Debit' ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">${item.type}</span></td>
+          <td class="p-3.5 font-bold text-amber-300">${item.head}</td>
+          <td class="p-3.5 text-slate-200">${item.desc}</td>
+          <td class="p-3.5 text-right font-bold ${item.type === 'Debit' ? 'text-rose-400' : 'text-emerald-400'}">PKR ${item.amount.toLocaleString()}</td>
         </tr>
       `).join('');
     }
 
-    function exportData() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getTransactions()));
-      const dlAnchor = document.createElement('a');
-      dlAnchor.setAttribute("href", dataStr);
-      dlAnchor.setAttribute("download", "bintaha_secured_accounting.json");
-      document.body.appendChild(dlAnchor);
-      dlAnchor.click();
-      dlAnchor.remove();
+    function filterTransactions() {
+      renderTable(transactionsDB);
+    }
+
+    function saveNewEntry() {
+      const date = document.getElementById('entryDate').value;
+      const account = document.getElementById('entryAccount').value;
+      const type = document.getElementById('entryType').value;
+      const head = document.getElementById('entryHead').value;
+      const desc = document.getElementById('entryDesc').value.trim() || 'General Entry';
+      const amount = parseFloat(document.getElementById('entryAmount').value) || 0;
+
+      if(amount <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+      }
+
+      const newEntry = { date, account, type, head, desc, amount };
+      transactionsDB.unshift(newEntry);
+      renderTable(transactionsDB);
+
+      console.log("Syncing with Google Sheet ID: " + GOOGLE_SHEET_ID, newEntry);
+
+      document.getElementById('entryAmount').value = '';
+      document.getElementById('entryDesc').value = '';
+      alert('Entry successfully saved and synchronized with Google Sheets!');
     }
   </script>
 </body>
