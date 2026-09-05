@@ -12,7 +12,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-  <!-- Universal Master Security Login Gate (One Password For All Pages) -->
+  <!-- Universal Master Security Login Gate -->
   <div id="securityGate" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-amber-500/50 p-8 rounded-3xl max-w-sm w-full space-y-6 shadow-2xl text-center gold-glow">
       <div class="w-16 h-16 bg-amber-500 text-slate-950 rounded-2xl mx-auto flex items-center justify-center font-black text-2xl shadow">
@@ -22,7 +22,7 @@
         <h2 class="text-xl font-black text-white">Global PropTech Master ERP</h2>
         <p class="text-xs text-amber-400 font-bold mt-1">CEO Taha Mobeen Bhutta • Bin Taha Associates</p>
       </div>
-      <input type="password" id="masterPin" placeholder="Enter Universal Master PIN" class="w-full bg-slate-950 border border-slate-700 px-4 py-3 rounded-xl text-center text-sm text-white focus:border-amber-500 outline-none font-bold">
+      <input type="password" id="masterPin" placeholder="Enter Universal Master PIN (taha123)" class="w-full bg-slate-950 border border-slate-700 px-4 py-3 rounded-xl text-center text-sm text-white focus:border-amber-500 outline-none font-bold">
       <button onclick="verifyMasterPin()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-3 rounded-xl font-black text-xs transition shadow-lg">
         Unlock Global PropTech ERP
       </button>
@@ -243,7 +243,6 @@
 
     function verifyMasterPin() {
       const pin = document.getElementById('masterPin').value.trim();
-      // Universal Master Password synced across all pages
       const savedPin = localStorage.getItem('binTahaUniversalMasterPin') || 'taha123';
       if(pin === savedPin || pin === '03219404812') {
         document.getElementById('securityGate').classList.add('hidden');
@@ -255,7 +254,7 @@
     }
 
     function lockSystem() {
-      const newPin = prompt("Enter new Universal Master PIN for all pages (or leave blank to just lock):");
+      const newPin = prompt("Enter new Universal Master PIN for all project pages (or leave blank to just lock):");
       if(newPin && newPin.trim() !== '') {
         localStorage.setItem('binTahaUniversalMasterPin', newPin.trim());
         alert('Universal Master PIN successfully updated for all project pages!');
