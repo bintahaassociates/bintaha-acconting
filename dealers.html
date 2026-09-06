@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bin Taha Associates | Live Master CRM, Utilities & WhatsApp Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    // STRICT SESSION SECURITY: Requires password taha123 every time browser/tab opens fresh
+    (function() {
+      const authKey = 'bintaha_dealers_session';
+      if (sessionStorage.getItem(authKey) !== 'active') {
+        const pass = prompt('🔐 Enter Master CEO Password to Access Directory Hub:');
+        if (pass === 'taha123' || pass === 'Taha123' || pass === 'طاہ123') {
+          sessionStorage.setItem(authKey, 'active');
+        } else {
+          alert('❌ Incorrect Password! Access Denied.');
+          window.location.href = 'signin.html';
+        }
+      }
+    })();
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base">
+
+  <!-- Top Navigation Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-3 px-6 border-b border-slate-800 space-y-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-amber-400 font-black text-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-crown"></i> BIN TAHA ASSOCIATES
+        </span>
+        <span class="text-slate-400 font-bold">CEO: Taha Mobeen Bhutta</span>
+        <span class="bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-lg font-bold">🟢 LIVE CRM & UTILITIES HUB</span>
+      </div>
+      <div class="flex items-center gap-2 font-bold text-[11px]">
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-emerald-400">🇵🇰 Lahore Headquarters</span>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 pt-1 font-bold">
+      <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-house mr-1"></i> Main ERP Hub</a>
+      <a href="accounting.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-xl transition"><i class="fa-solid fa-wallet mr-1"></i> Accounting ERP</a>
+      <a href="dealers.html" class="bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl font-black shadow"><i class="fa-solid fa-address-book mr-1"></i> Directory Hub</a>
+      <button onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl transition ml-auto font-black"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
+
+    <!-- Utilities Bar (World Clock & Currency Converter) -->
+    <div class="grid md:grid-cols-2 gap-6">
+      
+      <!-- World Clock Widget -->
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="bg-amber-500/10 text-amber-400 p-3 rounded-2xl text-lg">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Live World & Local Time</span>
+            <div id="liveClock" class="text-sm font-black text-white">Loading time...</div>
+          </div>
+        </div>
+        <div class="text-right text-[11px] font-bold text-cyan-400 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+          🇵🇰 Lahore (GMT+5)
+        </div>
+      </div>
+
+      <!-- Quick Currency & Rate Calculator -->
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-emerald-500/10 text-emerald-400 p-3 rounded-2xl text-lg">
+            <i class="fa-solid fa-calculator"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Currency / PKR Converter</span>
+            <div class="flex items-center gap-2 mt-1">
+              <input type="number" id="calcAmount" placeholder="Amount" value="1000" onkeyup="convertCurrency()" class="w-24 bg-slate-950 border border-slate-800 px-2 py-1 rounded-lg text-xs text-white outline-none">
+              <select id="calcCurrency" onchange="convertCurrency()" class="bg-slate-950 border border-slate-800 px-2 py-1 rounded-lg text-xs text-white outline-none">
+                <option value="280">USD ($)</option>
+                <option value="75">SAR (Riyal)</option>
+                <option value="76">AED (Dirham)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] text-slate-400 font-bold">Estimated PKR</span>
+          <div id="calcResult" class="text-xs font-black text-emerald-400">Rs. 280,000</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Header & Search Box Section -->
+    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+      <div>
+        <h1 class="text-xl font-black text-amber-400"><i class="fa-solid fa-cloud-arrow-down mr-2"></i> Master Business & Contact Directory</h1>
+        <p class="text-xs text-slate-400 mt-1">Live synchronized with Google Sheets across Dealers, Allottees, Web Leads, Investors, Contractors, and Suppliers.</p>
+      </div>
+      <div class="w-full md:w-72 flex items-center gap-2">
+        <input type="text" id="globalSearchInput" onkeyup="filterDirectory()" placeholder="🔍 Search records..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs text-white focus:border-amber-400 outline-none font-semibold">
+        <button onclick="loadLiveData()" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-xl transition" title="Refresh Live Data"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+    </div>
+
+    <!-- Category Tabs Bar (6 Pillars) -->
+    <div class="flex flex-wrap gap-2 bg-slate-900 p-3 rounded-2xl border border-slate-800 text-xs font-black">
+      <button onclick="switchCategory('Dealers')" id="tab-Dealers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer"><i class="fa-solid fa-handshake mr-1"></i> Dealers</button>
+      <button onclick="switchCategory('Allottees')" id="tab-Allottees" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-file-contract mr-1"></i> Allottees</button>
+      <button onclick="switchCategory('Web_Clients')" id="tab-Web_Clients" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-globe mr-1"></i> Web Clients</button>
+      <button onclick="switchCategory('Investors')" id="tab-Investors" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-vault mr-1"></i> Investors</button>
+      <button onclick="switchCategory('Contractors')" id="tab-Contractors" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-helmet-safety mr-1"></i> Contractors</button>
+      <button onclick="switchCategory('Suppliers')" id="tab-Suppliers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-truck-ramp-box mr-1"></i> Suppliers</button>
+    </div>
+
+    <!-- Dynamic Add New Record Form Section -->
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
+      <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+        <span class="text-amber-400 font-black text-xs uppercase tracking-wider" id="formHeading"><i class="fa-solid fa-user-plus mr-1"></i> Add New Record</span>
+        <span class="text-[10px] text-emerald-400 font-bold">🟢 Syncs Directly to Google Sheet</span>
+      </div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-4 text-xs font-bold">
+        <div>
+          <label class="block text-slate-400 mb-1" id="labelName">NAME / ENTITY</label>
+          <input type="text" id="inputName" placeholder="Enter name..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1" id="labelOwner">OWNER / CONTACT PERSON</label>
+          <input type="text" id="inputOwner" placeholder="Enter owner..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">PHONE / WHATSAPP</label>
+          <input type="text" id="inputContact" placeholder="03219404812" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1" id="labelSub">SOCIETY / SUB-CATEGORY</label>
+          <select id="inputSub" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">ADDRESS / DETAILS</label>
+          <input type="text" id="inputDetails" placeholder="Enter details..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+      </div>
+      <button onclick="addNewRecordToSheet()" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl transition shadow cursor-pointer text-xs">
+        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Sync to Google Sheet
+      </button>
+    </div>
+
+    <!-- Sub-Sorting & Filter Bar -->
+    <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+      <div class="flex items-center gap-3">
+        <span class="text-amber-400 uppercase tracking-wider" id="activeCategoryTitle">Current View: Dealers</span>
+      </div>
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <select id="subFilterSelect" onchange="applySubSorting()" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
+          <option value="all">All Sub-Categories / Societies</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Data Table -->
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3 text-xs">
+        <span class="font-black text-white"><i class="fa-solid fa-list mr-2 text-amber-400"></i> Live Google Sheet Database</span>
+        <span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-lg font-bold" id="recordCountBadge">Total: Loading...</span>
+      </div>
+      <div class="overflow-x-auto text-xs max-h-[600px] overflow-y-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 sticky top-0 bg-slate-900">
+              <th class="p-3">ID / Code</th>
+              <th class="p-3">Name / Entity</th>
+              <th class="p-3">Contact Person / Owner</th>
+              <th class="p-3">Phone / WhatsApp</th>
+              <th class="p-3">Sorting / Society / Speciality</th>
+              <th class="p-3">Address / Details</th>
+              <th class="p-3 text-center">Quick WhatsApp & Actions</th>
+            </tr>
+          </thead>
+          <tbody id="directoryTableBody" class="divide-y divide-slate-800 text-slate-300 font-semibold">
+            <tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading live data from Google Sheet...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-slate-950 text-slate-400 py-6 text-xs border-t border-slate-800 text-center">
+    <p>&copy; 2026 Bin Taha Associates. Directory Hub managed by CEO Taha Mobeen Bhutta.</p>
+  </footer>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxLhuYcUBTXtwdH3XVPaPiv6cSmxfM4g7spFsZ36Nk3uT61voWUnqG5O_I9LZLmgMG/exec";
+
+    let liveMasterData = {
+      Dealers: [],
+      Allottees: [],
+      Web_Clients: [],
+      Investors: [],
+      Contractors: [],
+      Suppliers: []
+    };
+
+    let currentCategory = 'Dealers';
+
+    const subCategoriesConfig = {
+      Dealers: ["LDA Avenue 1", "Jubilee Town", "Johar Town", "Sher Shah Colony", "Raiwind Road", "Bahria / DHA"],
+      Allottees: ["LDA Avenue 1", "Jubilee Town", "LDA City", "Johar Town", "Raiwind Road"],
+      Web_Clients: ["Website Leads", "Social Media", "Direct Call Inquiry", "Reference"],
+      Investors: ["Primary Investor", "Strategic Investor", "Partner", "Silent Investor"],
+      Contractors: ["Grey Structure / Mistry", "Plumbing & Sanitary", "Electrical Wiring", "Wood Work & Doors", "Paint & Finishing"],
+      Suppliers: ["Bricks & Tiles", "Sand, Bajri & Crush", "Cement & Steel", "Timber / Wood", "Hardware & Paints"]
+    };
+
+    // Live World Clock Engine
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('liveClock').innerText = now.toLocaleDateString('en-PK', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) + ' | ' + now.toLocaleTimeString('en-PK');
+    }, 1000);
+
+    function convertCurrency() {
+      let amt = parseFloat(document.getElementById('calcAmount').value) || 0;
+      let rate = parseFloat(document.getElementById('calcCurrency').value) || 280;
+      let res = amt * rate;
+      document.getElementById('calcResult').innerText = "Rs. " + res.toLocaleString('en-PK');
+    }
+
+    async function loadLiveData() {
+      try {
+        let res = await fetch(WEB_APP_URL);
+        let json = await res.json();
+        liveMasterData = json;
+        switchCategory(currentCategory);
+      } catch(err) {
+        console.error(err);
+        document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">❌ Error connecting to Google Sheet: ${err}</td></tr>`;
+      }
+    }
+
+    function switchCategory(category) {
+      currentCategory = category;
+      
+      document.querySelectorAll('.flex-wrap.gap-2 button').forEach(btn => {
+        btn.className = "flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer";
+      });
+      document.getElementById('tab-' + category).className = "flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer font-black";
+
+      const config = {
+        Dealers: { title: "Current View: Real Estate Dealers", heading: "Add New Dealer", nameLbl: "DEALER / OFFICE NAME", ownerLbl: "OWNER / CEO NAME" },
+        Allottees: { title: "Current View: Plot Owners & Allottees", heading: "Add New Allottee / Owner", nameLbl: "PLOT / PROPERTY IDENTIFIER", ownerLbl: "OWNER NAME" },
+        Web_Clients: { title: "Current View: Website & Social Media Leads", heading: "Add New Web Client", nameLbl: "INQUIRY TITLE / PROJECT", ownerLbl: "CLIENT NAME" },
+        Investors: { title: "Current View: Project Investors", heading: "Add New Investor", nameLbl: "INVESTOR / GROUP NAME", ownerLbl: "REPRESENTATIVE NAME" },
+        Contractors: { title: "Current View: Construction Contractors", heading: "Add New Contractor", nameLbl: "CONTRACTOR / FIRM NAME", ownerLbl: "MASTER / HEAD NAME" },
+        Suppliers: { title: "Current View: Material Suppliers", heading: "Add New Supplier", nameLbl: "SHOP / SUPPLIER NAME", ownerLbl: "OWNER NAME" }
+      };
+
+      document.getElementById('activeCategoryTitle').innerText = config[category].title;
+      document.getElementById('formHeading').innerHTML = `<i class="fa-solid fa-user-plus mr-1"></i> ${config[category].heading}`;
+      document.getElementById('labelName').innerText = config[category].nameLbl;
+      document.getElementById('labelOwner').innerText = config[category].ownerLbl;
+
+      const subSelect = document.getElementById('inputSub');
+      subSelect.innerHTML = '';
+      subCategoriesConfig[category].forEach(sub => {
+        subSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+      });
+
+      populateSubFilters(category);
+      renderTable(liveMasterData[category] || []);
+    }
+
+    function populateSubFilters(category) {
+      const select = document.getElementById('subFilterSelect');
+      select.innerHTML = '<option value="all">All Sub-Categories / Societies</option>';
+      
+      let items = liveMasterData[category] || [];
+      let subs = [...new Set(items.map(i => i.sub))];
+      
+      subs.forEach(sub => {
+        select.innerHTML += `<option value="${sub}">${sub}</option>`;
+      });
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('directoryTableBody');
+      document.getElementById('recordCountBadge').innerText = `Total: ${list.length} Record(s)`;
+      
+      if(list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No records found in this category. Add via form above or directly in Google Sheet.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      list.forEach(item => {
+        let phone = String(item.contact || '');
+        let cleanPhone = phone.replace(/\D/g,'');
+        let waNumber = cleanPhone.startsWith('0') ? '92' + cleanPhone.slice(1) : cleanPhone;
+        let defaultMsg = encodeURIComponent(`السلام علیکم ${item.owner || ''} صاحب! بن طہٰ ایسوسی ایٹس (CEO: طاہ مبین بھٹا) کی طرف سے آپ کو خوش آمدید۔ رئیل اسٹیٹ اور کنسٹرکشن اپڈیٹس کے لیے رابطہ کریں۔`);
+
+        html += `
+          <tr>
+            <td class="p-3 text-amber-400 font-bold">${item.id || 'N/A'}</td>
+            <td class="p-3 text-white font-black">${item.name || 'N/A'}</td>
+            <td class="p-3">${item.owner || 'N/A'}</td>
+            <td class="p-3 text-emerald-400 font-bold"><i class="fa-solid fa-phone mr-1"></i>${phone}</td>
+            <td class="p-3"><span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400">${item.sub || 'N/A'}</span></td>
+            <td class="p-3 text-slate-400">${item.details || 'N/A'}</td>
+            <td class="p-3 text-center space-x-2">
+              <a href="tel:${phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg inline-block transition" title="Call Now"><i class="fa-solid fa-phone"></i></a>
+              <a href="https://wa.me/${waNumber}?text=${defaultMsg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg inline-block transition font-bold" title="Send WhatsApp Campaign"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    async function addNewRecordToSheet() {
+      const name = document.getElementById('inputName').value.trim();
+      const owner = document.getElementById('inputOwner').value.trim();
+      const contact = document.getElementById('inputContact').value.trim();
+      const sub = document.getElementById('inputSub').value;
+      const details = document.getElementById('inputDetails').value.trim();
+
+      if(!name || !contact) {
+        alert('⚠️ Please fill in Name and Phone Number!');
+        return;
+      }
+
+      const prefix = { Dealers: 'DL', Allottees: 'ALT', Web_Clients: 'WEB', Investors: 'INV', Contractors: 'CON', Suppliers: 'SUP' };
+      const newId = prefix[currentCategory] + '-' + Date.now().toString().slice(-4);
+
+      const payload = {
+        tab: currentCategory,
+        id: newId,
+        name: name,
+        owner: owner || 'N/A',
+        contact: contact,
+        sub: sub,
+        details: details || 'Lahore'
+      };
+
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = "Syncing to Google Sheet...";
+      btn.disabled = true;
+
+      try {
+        let res = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        let result = await res.json();
+        
+        if(result.status === 'success') {
+          alert(`✅ Success! Record added to Google Sheet under "${currentCategory}".`);
+          document.getElementById('inputName').value = '';
+          document.getElementById('inputOwner').value = '';
+          document.getElementById('inputContact').value = '';
+          document.getElementById('inputDetails').value = '';
+          await loadLiveData();
+        } else {
+          alert(`❌ Error from Sheet: ${result.message}`);
+        }
+      } catch(err) {
+        alert(`❌ Sync failed: ${err}`);
+      } finally {
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Sync to Google Sheet`;
+        btn.disabled = false;
+      }
+    }
+
+    function applySubSorting() {
+      let subVal = document.getElementById('subFilterSelect').value;
+      let items = liveMasterData[currentCategory] || [];
+      
+      if(subVal === 'all') {
+        renderTable(items);
+      } else {
+        let filtered = items.filter(i => i.sub === subVal);
+        renderTable(filtered);
+      }
+    }
+
+    function filterDirectory() {
+      let query = document.getElementById('globalSearchInput').value.toLowerCase();
+      let items = liveMasterData[currentCategory] || [];
+      
+      let filtered = items.filter(i => 
+        String(i.name).toLowerCase().includes(query) || 
+        String(i.contact).toLowerCase().includes(query) || 
+        String(i.owner).toLowerCase().includes(query) ||
+        String(i.sub).toLowerCase().includes(query) ||
+        String(i.details).toLowerCase().includes(query)
+      );
+      renderTable(filtered);
+    }
+
+    window.onload = function() {
+      loadLiveData();
+    };
+
+    function adminLogout() {
+      sessionStorage.removeItem('bintaha_dealers_session');
+      alert('🔒 Successfully logged out from Directory Hub.');
+      window.location.href = 'signin.html';
+    }
+  </script>
+</body>
+</html>
