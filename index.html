@@ -211,6 +211,7 @@
   </footer>
 
   <script>
+    // Set today date by default
     document.getElementById('entryDate').valueAsDate = new Date();
 
     const headsList = [
@@ -224,6 +225,7 @@
       document.getElementById('formTitleTag').innerHTML = `<i class="fa-solid fa-plus-circle mr-1"></i> Add Entry form ${headName}`;
       document.getElementById('tableTitleTag').innerHTML = `<i class="fa-solid fa-list mr-2 text-amber-400"></i> Transactions from ${headName}`;
 
+      // Update active yellow highlight across cards
       headsList.forEach(h => {
         const card = document.getElementById('card-' + h);
         if(h === headName) {
@@ -258,10 +260,12 @@
         email: 'bintahacrm@gmail.com'
       };
 
+      // Save to Local Ledger
       let ledger = JSON.parse(localStorage.getItem('bintaha_accounting_ledger') || '[]');
       ledger.unshift(entryObj);
       localStorage.setItem('bintaha_accounting_ledger', JSON.stringify(ledger));
 
+      // Live Google Sheet Webhook Sync (Accounting Data Sheet)
       const accountingWebhook = 'https://script.google.com/macros/s/AKfycbxtmVS9snQMnLF_Z_qATwuJQWDlDe2SVQ_YRDuo9nX0Yzbmq1nXnMNOllj1C32tuyzbDg/exec';
       fetch(accountingWebhook, {
         method: 'POST',
