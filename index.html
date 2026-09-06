@@ -3,13 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bin Taha Associates | Global Accounting ERP</title>
+  <title>Bin Taha Associates | Global Accounting ERP & Google Sheets Master Sync</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .shining-gold { color: #fcd34d; text-shadow: 0 0 25px rgba(252, 211, 77, 0.5); }
+    .gold-glow { box-shadow: 0 0 50px rgba(252, 211, 77, 0.4); }
+  </style>
+  <script>
+    // STRICT SESSION SECURITY: Requires password taha123 every time browser/tab opens fresh
+    (function() {
+      const authKey = 'bintaha_accounting_session';
+      if (sessionStorage.getItem(authKey) !== 'active') {
+        const pass = prompt('🔐 Enter Master CEO Password to Access Accounting ERP:');
+        if (pass === 'taha123' || pass === 'Taha123' || pass === 'طاہ123') {
+          sessionStorage.setItem(authKey, 'active');
+        } else {
+          alert('❌ Incorrect Password! Access Denied.');
+          window.location.href = 'signin.html';
+        }
+      }
+    })();
+  </script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base">
 
-  <!-- Top Navigation Bar with Corrected 10 Links -->
   <div class="bg-slate-900 text-slate-300 text-xs py-3 px-6 border-b border-slate-800 space-y-2">
     <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center gap-3">
@@ -17,86 +35,298 @@
           <i class="fa-solid fa-crown"></i> BIN TAHA ASSOCIATES
         </span>
         <span class="text-slate-400 font-bold">CEO: Taha Mobeen Bhutta</span>
-        <span class="bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-lg font-bold">🟢 GLOBAL ACCOUNTING ERP & GOOGLE SHEETS MASTER SYNC ACTIVE</span>
+        <span class="bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-lg font-bold">GLOBAL ACCOUNTING ERP & GOOGLE SHEETS MASTER SYNC ACTIVE</span>
       </div>
       <div class="flex items-center gap-2 font-bold text-[11px]">
-        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-emerald-400">🇵🇰 Bugtia Chowk, Raiwind Road, Lahore</span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-emerald-400">🇵🇰 PK: <span id="clockPk" class="text-white">--:--</span></span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-amber-400">🇦🇪 DXB: <span id="clockDubai" class="text-white">--:--</span></span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400">🇬🇧 LDN: <span id="clockLondon" class="text-white">--:--</span></span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-purple-400">🇺🇸 NY: <span id="clockNy" class="text-white">--:--</span></span>
       </div>
     </div>
-    
-    <!-- 10 Navigation Buttons with Corrected Relative Links -->
     <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 pt-1 font-bold">
-      <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-house mr-1"></i> Main ERP Hub</a>
-      <a href="crm-dashboard.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-chart-line mr-1"></i> Master CRM</a>
-      <a href="owners-crm.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-building-user mr-1"></i> Global Owners CRM</a>
-      <a href="inbox.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-inbox mr-1"></i> CRM Inbox</a>
-      <a href="properties.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-city mr-1"></i> Properties Hub</a>
-      <a href="client-form.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-user-plus mr-1"></i> Client Form</a>
-      <a href="services.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-layer-group mr-1"></i> Services Hub</a>
-      <a href="dealers.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-address-book mr-1"></i> Directory Hub</a>
-      <a href="about.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-circle-info mr-1"></i> About</a>
-      <a href="contact.html" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-xl transition"><i class="fa-solid fa-envelope mr-1"></i> Contact</a>
+      <a href="index.html" class="bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl font-black shadow"><i class="fa-solid fa-house mr-1"></i> Main ERP Hub</a>
+      <a href="dealers.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition font-black"><i class="fa-solid fa-address-book mr-1"></i> Master Directory</a>
+      <a href="crm-dashboard.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-database mr-1"></i> Master CRM</a>
+      <a href="owners-crm.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-globe mr-1"></i> Global Owners CRM</a>
+      <a href="inbox.html" class="bg-purple-600 text-white hover:bg-purple-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-inbox mr-1"></i> CRM Inbox</a>
+      <a href="properties.html" class="bg-cyan-500 text-slate-950 hover:bg-cyan-400 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-building mr-1"></i> Properties Hub</a>
+      <a href="client-form.html" class="bg-emerald-600 text-white hover:bg-emerald-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-file-lines mr-1"></i> Client Form</a>
+      <a href="services.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-bolt mr-1"></i> Services Hub</a>
+      <a href="https://wa.me/923219404812" target="_blank" class="bg-emerald-500 text-white hover:bg-emerald-600 px-3 py-2 rounded-xl transition"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp CEO</a>
+      <button onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl transition ml-auto font-black"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
     </div>
   </div>
 
-  <!-- Main Content Dashboard -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
-    
-    <!-- Balance Overview Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="grid md:grid-cols-3 gap-6">
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-2">
-        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Net Balance</span>
-        <h2 class="text-2xl font-black text-rose-500">PKR -25,000</h2>
+        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">TOTAL NET BALANCE</div>
+        <div class="text-3xl font-black text-amber-400" id="totalNetBalance">PKR -25,000</div>
       </div>
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-2">
-        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Allied Bank (ABL)</span>
-        <h2 class="text-2xl font-black text-rose-500">PKR -25,000</h2>
+        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">ALLIED BANK (ABL)</div>
+        <div class="text-3xl font-black text-emerald-400" id="ablBalance">PKR -25,000</div>
       </div>
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-2">
-        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Meezan & HBL Combined</span>
-        <h2 class="text-2xl font-black text-amber-400">PKR 0</h2>
+        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">MEEZAN & HBL COMBINED</div>
+        <div class="text-3xl font-black text-cyan-400" id="meezanBalance">PKR 0</div>
       </div>
     </div>
 
-    <!-- Financial Expense Heads Section -->
-    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-6">
-      <h3 class="text-sm font-black text-amber-400 flex items-center gap-2">
-        <i class="fa-solid fa-wallet"></i> FINANCIAL EXPENSE HEADS & LIVE BALANCES
-      </h3>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 font-bold block"><i class="fa-solid fa-briefcase mr-1 text-amber-400"></i> Office Expenses</span>
-          <span class="text-base font-black text-rose-500 mt-1 block">PKR -25,000</span>
+    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
+      <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+        <span class="text-amber-400 font-black text-xs uppercase tracking-wider"><i class="fa-solid fa-wallet mr-1"></i> FINANCIAL EXPENSE HEADS & LIVE BALANCES</span>
+        <span class="text-[11px] text-slate-400 font-semibold">Click any head to open active management form</span>
+      </div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+        <div onclick="selectHead('Office Expenses')" id="card-Office Expenses" class="bg-amber-500 text-slate-950 p-4 rounded-2xl shadow-xl space-y-2 font-black cursor-pointer transition transform hover:scale-105">
+          <div class="flex items-center gap-1.5"><i class="fa-solid fa-briefcase"></i> Office Expenses</div>
+          <div class="text-sm font-black" id="val-Office Expenses">PKR -25,000</div>
         </div>
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 font-bold block"><i class="fa-solid fa-house mr-1 text-amber-400"></i> Home Expenses</span>
-          <span class="text-base font-black text-slate-200 mt-1 block">PKR 0</span>
+        <div onclick="selectHead('Home Expenses')" id="card-Home Expenses" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-house"></i> Home Expenses</div>
+          <div class="text-sm text-amber-400" id="val-Home Expenses">PKR 0</div>
         </div>
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 font-bold block"><i class="fa-solid fa-user mr-1 text-amber-400"></i> Personal Expenses</span>
-          <span class="text-base font-black text-slate-200 mt-1 block">PKR 0</span>
+        <div onclick="selectHead('Personal Expenses')" id="card-Personal Expenses" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-user"></i> Personal Expenses</div>
+          <div class="text-sm text-amber-400" id="val-Personal Expenses">PKR 0</div>
         </div>
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 font-bold block"><i class="fa-solid fa-map-location-dot mr-1 text-amber-400"></i> Field & Ground</span>
-          <span class="text-base font-black text-slate-200 mt-1 block">PKR 0</span>
+        <div onclick="selectHead('Staff Salaries')" id="card-Staff Salaries" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-users"></i> Staff Salaries</div>
+          <div class="text-sm text-amber-400" id="val-Staff Salaries">PKR 0</div>
         </div>
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 font-bold block"><i class="fa-solid fa-book mr-1 text-amber-400"></i> Cash Day Book</span>
-          <span class="text-base font-black text-slate-200 mt-1 block">PKR 0</span>
+        <div onclick="selectHead('Field & Ground')" id="card-Field & Ground" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-map-location-dot"></i> Field & Ground</div>
+          <div class="text-sm text-amber-400" id="val-Field & Ground">PKR 0</div>
         </div>
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
-          <span class="text-xs text-slate-400 font-bold block"><i class="fa-solid fa-building mr-1 text-amber-400"></i> Real Estate Projects</span>
-          <span class="text-base font-black text-slate-200 mt-1 block">PKR 0</span>
+        <div onclick="selectHead('Cash Day Book')" id="card-Cash Day Book" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-book"></i> Cash Day Book</div>
+          <div class="text-sm text-amber-400" id="val-Cash Day Book">PKR 0</div>
         </div>
+        <div onclick="selectHead('Real Estate Projects')" id="card-Real Estate Projects" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-building"></i> Real Estate Projects</div>
+          <div class="text-sm text-amber-400" id="val-Real Estate Projects">PKR 0</div>
+        </div>
+        <div onclick="selectHead('Construction Material')" id="card-Construction Material" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-cubes"></i> Construction Material</div>
+          <div class="text-sm text-amber-400" id="val-Construction Material">PKR 0</div>
+        </div>
+        <div onclick="selectHead('FBR & Taxes')" id="card-FBR & Taxes" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-receipt"></i> FBR & Taxes</div>
+          <div class="text-sm text-amber-400" id="val-FBR & Taxes">PKR 0</div>
+        </div>
+        <div onclick="selectHead('Ads & Marketing')" id="card-Ads & Marketing" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-bullhorn"></i> Ads & Marketing</div>
+          <div class="text-sm text-amber-400" id="val-Ads & Marketing">PKR 0</div>
+        </div>
+        <div onclick="selectHead('Assets & Savings')" id="card-Assets & Savings" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition">
+          <div class="flex items-center gap-1.5 text-white"><i class="fa-solid fa-vault"></i> Assets & Savings</div>
+          <div class="text-sm text-amber-400" id="val-Assets & Savings">PKR 0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-amber-400 font-black text-xs uppercase tracking-wider" id="formTitleTag">
+          <i class="fa-solid fa-plus-circle mr-1"></i> Add Entry form Office Expenses
+        </span>
+      </div>
+
+      <div class="grid md:grid-cols-5 gap-4 text-xs font-bold">
+        <div>
+          <label class="block text-slate-400 mb-1">DATE</label>
+          <input type="date" id="entryDate" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">BANK / CASH ACCOUNT</label>
+          <select id="entryBank" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+            <option>Allied Bank (ABL)</option>
+            <option>Meezan Bank</option>
+            <option>Cash in Hand</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">TYPE</label>
+          <select id="entryType" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+            <option value="Debit">Debit (Expense / Payment)</option>
+            <option value="Credit">Credit (Inflow)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">SELECTED HEAD</label>
+          <input type="text" id="entryHead" value="Office Expenses" readonly class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-amber-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">PARTY / AMOUNT & DESCRIPTION</label>
+          <div class="flex gap-2">
+            <input type="number" id="entryAmount" placeholder="Amount (PKR)" class="w-1/2 bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+            <input type="text" id="entryDesc" placeholder="Description..." class="w-1/2 bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+          </div>
+        </div>
+      </div>
+      <button onclick="submitAccountingEntry()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl transition shadow cursor-pointer text-xs">
+        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save Entry & Sync to Google Sheet (Accounting Data)
+      </button>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3 text-xs">
+        <span class="font-black text-white" id="tableTitleTag"><i class="fa-solid fa-list mr-2 text-amber-400"></i> Transactions from Office Expenses</span>
+        <span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-lg font-bold" id="recordCountTag">Total: 1 Record(s)</span>
+      </div>
+      <div class="overflow-x-auto text-xs">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400">
+              <th class="p-3">DATE</th>
+              <th class="p-3">ACCOUNT / BANK</th>
+              <th class="p-3">TYPE</th>
+              <th class="p-3">HEAD</th>
+              <th class="p-3">PARTY / DESCRIPTION</th>
+              <th class="p-3">AMOUNT (PKR)</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody" class="divide-y divide-slate-800 text-slate-300 font-semibold">
+            <tr>
+              <td class="p-3">2026-09-06</td>
+              <td class="p-3 text-white">Allied Bank (ABL)</td>
+              <td class="p-3 text-rose-400 font-bold">Debit</td>
+              <td class="p-3">Office Expenses</td>
+              <td class="p-3">Utility Bill / Client Notice</td>
+              <td class="p-3 font-bold text-amber-400">25,000</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
   </main>
 
   <footer class="bg-slate-950 text-slate-400 py-6 text-xs border-t border-slate-800 text-center">
-    <p>&copy; 2026 Bin Taha Associates. All Rights Reserved. CEO: Taha Mobeen Bhutta.</p>
+    <p>&copy; 2026 Bin Taha Associates. Global Accounting ERP System managed by CEO Taha Mobeen Bhutta.</p>
   </footer>
 
+  <script>
+    // Set today date by default
+    document.getElementById('entryDate').valueAsDate = new Date();
+
+    const headsList = [
+      'Office Expenses', 'Home Expenses', 'Personal Expenses', 'Staff Salaries', 
+      'Field & Ground', 'Cash Day Book', 'Real Estate Projects', 'Construction Material', 
+      'FBR & Taxes', 'Ads & Marketing', 'Assets & Savings'
+    ];
+
+    function selectHead(headName) {
+      document.getElementById('entryHead').value = headName;
+      document.getElementById('formTitleTag').innerHTML = `<i class="fa-solid fa-plus-circle mr-1"></i> Add Entry form ${headName}`;
+      document.getElementById('tableTitleTag').innerHTML = `<i class="fa-solid fa-list mr-2 text-amber-400"></i> Transactions from ${headName}`;
+
+      headsList.forEach(h => {
+        const card = document.getElementById('card-' + h);
+        if(h === headName) {
+          card.className = "bg-amber-500 text-slate-950 p-4 rounded-2xl shadow-xl space-y-2 font-black cursor-pointer transition transform hover:scale-105";
+        } else {
+          card.className = "bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-bold text-slate-300 shadow cursor-pointer hover:border-amber-500/50 transition";
+        }
+      });
+    }
+
+    function submitAccountingEntry() {
+      const date = document.getElementById('entryDate').value;
+      const bank = document.getElementById('entryBank').value;
+      const type = document.getElementById('entryType').value;
+      const head = document.getElementById('entryHead').value;
+      const amount = document.getElementById('entryAmount').value || '0';
+      const desc = document.getElementById('entryDesc').value || 'General Entry';
+
+      if(!amount || amount <= 0) {
+        alert('⚠️ Please enter a valid amount!');
+        return;
+      }
+
+      const entryObj = {
+        id: Date.now(),
+        date: date,
+        bank: bank,
+        type: type,
+        head: head,
+        party: desc,
+        amount: amount,
+        email: 'bintahacrm@gmail.com'
+      };
+
+      let ledger = JSON.parse(localStorage.getItem('bintaha_accounting_ledger') || '[]');
+      ledger.unshift(entryObj);
+      localStorage.setItem('bintaha_accounting_ledger', JSON.stringify(ledger));
+
+      const accountingWebhook = 'https://script.google.com/macros/s/AKfycbxtmVS9snQMnLF_Z_qATwuJQWDlDe2SVQ_YRDuo9nX0Yzbmq1nXnMNOllj1C32tuyzbDg/exec';
+      fetch(accountingWebhook, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entryObj)
+      }).catch(e => console.log('Sync error:', e));
+
+      alert(`✅ Success! Entry for "${head}" synced to Bin Taha Accounting Data Google Sheet.`);
+      document.getElementById('entryAmount').value = '';
+      document.getElementById('entryDesc').value = '';
+      loadLedgerTable();
+    }
+
+    function loadLedgerTable() {
+      const ledger = JSON.parse(localStorage.getItem('bintaha_accounting_ledger') || '[]');
+      const tbody = document.getElementById('ledgerTableBody');
+      document.getElementById('recordCountTag').innerText = `Total: ${ledger.length + 1} Record(s)`;
+      
+      let html = `
+        <tr>
+          <td class="p-3">2026-09-06</td>
+          <td class="p-3 text-white">Allied Bank (ABL)</td>
+          <td class="p-3 text-rose-400 font-bold">Debit</td>
+          <td class="p-3">Office Expenses</td>
+          <td class="p-3">Utility Bill / Client Notice</td>
+          <td class="p-3 font-bold text-amber-400">25,000</td>
+        </tr>
+      `;
+      ledger.forEach(item => {
+        const typeColor = item.type === 'Credit' ? 'text-emerald-400' : 'text-rose-400';
+        html += `
+          <tr>
+            <td class="p-3">${item.date}</td>
+            <td class="p-3 text-white">${item.bank}</td>
+            <td class="p-3 ${typeColor} font-bold">${item.type}</td>
+            <td class="p-3">${item.head}</td>
+            <td class="p-3">${item.party}</td>
+            <td class="p-3 font-bold text-amber-400">${Number(item.amount).toLocaleString()}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function updateWorldClocks() {
+      const now = new Date();
+      document.getElementById('clockPk').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockDubai').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockLondon').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockNy').innerText = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateWorldClocks, 1000);
+
+    window.onload = function() { 
+      updateWorldClocks(); 
+      loadLedgerTable();
+    };
+
+    function adminLogout() {
+      sessionStorage.removeItem('bintaha_accounting_session');
+      alert('🔒 Successfully logged out from Secure Accounting Vault.');
+      window.location.href = 'signin.html';
+    }
+  </script>
 </body>
 </html>
