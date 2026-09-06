@@ -20,7 +20,7 @@
           sessionStorage.setItem(authKey, 'active');
         } else {
           alert('❌ Incorrect Password! Access Denied.');
-          window.location.href = 'signin.html';
+          window.location.href = '../signin.html';
         }
       }
     })();
@@ -45,14 +45,14 @@
       </div>
     </div>
     <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 pt-1 font-bold">
-      <a href="index.html" class="bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl font-black shadow"><i class="fa-solid fa-house mr-1"></i> Main ERP Hub</a>
-      <a href="dealers.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition font-black"><i class="fa-solid fa-address-book mr-1"></i> Master Directory</a>
-      <a href="crm-dashboard.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-database mr-1"></i> Master CRM</a>
-      <a href="owners-crm.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-globe mr-1"></i> Global Owners CRM</a>
-      <a href="inbox.html" class="bg-purple-600 text-white hover:bg-purple-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-inbox mr-1"></i> CRM Inbox</a>
-      <a href="properties.html" class="bg-cyan-500 text-slate-950 hover:bg-cyan-400 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-building mr-1"></i> Properties Hub</a>
-      <a href="client-form.html" class="bg-emerald-600 text-white hover:bg-emerald-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-file-lines mr-1"></i> Client Form</a>
-      <a href="services.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-bolt mr-1"></i> Services Hub</a>
+      <a href="../index.html" class="bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl font-black shadow"><i class="fa-solid fa-house mr-1"></i> Main ERP Hub</a>
+      <a href="../dealers.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition font-black"><i class="fa-solid fa-address-book mr-1"></i> Master Directory</a>
+      <a href="../crm-dashboard.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-database mr-1"></i> Master CRM</a>
+      <a href="../owners-crm.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-globe mr-1"></i> Global Owners CRM</a>
+      <a href="../inbox.html" class="bg-purple-600 text-white hover:bg-purple-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-inbox mr-1"></i> CRM Inbox</a>
+      <a href="../properties.html" class="bg-cyan-500 text-slate-950 hover:bg-cyan-400 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-building mr-1"></i> Properties Hub</a>
+      <a href="../client-form.html" class="bg-emerald-600 text-white hover:bg-emerald-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-file-lines mr-1"></i> Client Form</a>
+      <a href="../services.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-bolt mr-1"></i> Services Hub</a>
       <a href="https://wa.me/923219404812" target="_blank" class="bg-emerald-500 text-white hover:bg-emerald-600 px-3 py-2 rounded-xl transition"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp CEO</a>
       <button onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl transition ml-auto font-black"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
     </div>
@@ -325,7 +325,7 @@
     function adminLogout() {
       sessionStorage.removeItem('bintaha_accounting_session');
       alert('🔒 Successfully logged out from Secure Accounting Vault.');
-      window.location.href = 'signin.html';
+      window.location.href = '../signin.html';
     }
   </script>
 </body>
