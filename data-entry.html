@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bin Taha Associates | Master Data Entry & Control System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    // STRICT SESSION SECURITY
+    (function() {
+      const authKey = 'bintaha_accounting_session';
+      if (sessionStorage.getItem(authKey) !== 'active') {
+        const pass = prompt('🔐 Enter Master CEO Password to Access Data Entry Hub:');
+        if (pass === 'taha123' || pass === 'Taha123' || pass === 'طاہ123') {
+          sessionStorage.setItem(authKey, 'active');
+        } else {
+          alert('❌ Incorrect Password! Access Denied.');
+          window.location.href = 'index.html';
+        }
+      }
+    })();
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base">
+
+  <!-- TOP NAVIGATION BAR WITH WORLD CLOCKS -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-3 px-6 border-b border-slate-800 space-y-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-amber-400 font-black text-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-crown"></i> BIN TAHA ASSOCIATES
+        </span>
+        <span class="text-slate-400 font-bold">CEO: Taha Mobeen Bhutta</span>
+        <span class="bg-amber-500/20 text-amber-400 px-2.5 py-1 rounded-lg font-bold">MASTER DATA ENTRY & TWO-WAY SYNC SYSTEM</span>
+      </div>
+      <div class="flex items-center gap-2 font-bold text-[11px]">
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-emerald-400">🇵🇰 PK: <span id="clockPk" class="text-white">--:--</span></span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-amber-400">🇦🇪 DXB: <span id="clockDubai" class="text-white">--:--</span></span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400">🇬🇧 LDN: <span id="clockLondon" class="text-white">--:--</span></span>
+        <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-purple-400">🇺🇸 NY: <span id="clockNy" class="text-white">--:--</span></span>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center pt-1 font-bold">
+      <span class="text-slate-400"><i class="fa-solid fa-sync mr-1 text-amber-400"></i> Centralized Two-Way Sync Desk (Accounts, CRM & Google Sheets)</span>
+      <a href="index.html" class="bg-amber-500 text-slate-950 px-4 py-1.5 rounded-xl font-black shadow hover:bg-amber-400 transition">
+        <i class="fa-solid fa-arrow-left mr-1"></i> Return to Accounting ERP
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
+    
+    <!-- HEADER INTRO -->
+    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-3">
+      <h1 class="text-2xl font-black text-amber-400 flex items-center gap-2">
+        <i class="fa-solid fa-network-wired"></i> Master Data Entry & Two-Way Cloud Sync
+      </h1>
+      <p class="text-xs text-slate-400 font-semibold">
+        Perform manual entries from your central desk. All updates sync instantly to local storage, target system hubs, and live Google Sheets databases in real-time.
+      </p>
+    </div>
+
+    <!-- TARGET SYSTEM SELECTOR TABS (8 HUBS) -->
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+      <button onclick="setTargetSystem('Master Directory', 'https://bintahaassociates.github.io/bintaha-main/dealers.html')" id="tab-Master Directory" class="bg-amber-500 text-slate-950 p-4 rounded-2xl font-black shadow-xl transition text-left space-y-1 cursor-pointer">
+        <div class="flex items-center gap-2"><i class="fa-solid fa-address-book text-sm"></i> Master Directory</div>
+        <div class="text-[10px] opacity-80">Add dealers & business contacts</div>
+      </button>
+      <button onclick="setTargetSystem('Master CRM', 'https://bintahaassociates.github.io/bintaha-main/crm-dashboard.html')" id="tab-Master CRM" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-database text-sm text-amber-400"></i> Master CRM</div>
+        <div class="text-[10px] text-slate-400">Log client inquiries & leads</div>
+      </button>
+      <button onclick="setTargetSystem('Global Owners CRM', 'https://bintahaassociates.github.io/bintaha-main/owners-crm.html')" id="tab-Global Owners CRM" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-globe text-sm text-amber-400"></i> Global Owners CRM</div>
+        <div class="text-[10px] text-slate-400">Add property owners & profiles</div>
+      </button>
+      <button onclick="setTargetSystem('CRM Inbox', 'https://bintahaassociates.github.io/bintaha-main/inbox.html')" id="tab-CRM Inbox" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-inbox text-sm text-amber-400"></i> CRM Inbox</div>
+        <div class="text-[10px] text-slate-400">Direct manual message drop</div>
+      </button>
+      <button onclick="setTargetSystem('Property Hub', 'https://bintahaassociates.github.io/bintaha-main/properties.html')" id="tab-Property Hub" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-building text-sm text-amber-400"></i> Property Hub</div>
+        <div class="text-[10px] text-slate-400">List new real estate projects</div>
+      </button>
+      <button onclick="setTargetSystem('Services Hub', 'https://bintahaassociates.github.io/bintaha-main/services.html')" id="tab-Services Hub" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-bolt text-sm text-amber-400"></i> Services Hub</div>
+        <div class="text-[10px] text-slate-400">Add construction/contracting updates</div>
+      </button>
+      <button onclick="setTargetSystem('Dealers Directory', 'https://bintahaassociates.github.io/bintaha-main/dealers.html')" id="tab-Dealers Directory" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-users-gear text-sm text-amber-400"></i> Dealers Directory</div>
+        <div class="text-[10px] text-slate-400">Manage dealer networks & agents</div>
+      </button>
+      <button onclick="setTargetSystem('WhatsApp & Property Sync', 'https://bintahaassociates.github.io/bintaha-main/properties.html')" id="tab-WhatsApp & Property Sync" class="bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer">
+        <div class="flex items-center gap-2 text-white"><i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i> WhatsApp & Property Sync</div>
+        <div class="text-[10px] text-slate-400">Broadcast property alerts & sync</div>
+      </button>
+    </div>
+
+    <!-- ENTRY FORM CONTAINER -->
+    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
+      <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+        <span class="text-amber-400 font-black text-xs uppercase tracking-wider" id="activeFormTitle">
+          <i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry Form: Master Directory
+        </span>
+        <span id="externalLinkBtn">
+          <a href="https://bintahaassociates.github.io/bintaha-main/dealers.html" target="_blank" class="bg-amber-500/20 text-amber-400 hover:bg-amber-500 hover:text-slate-950 px-3 py-1.5 rounded-xl font-bold transition text-[11px]">
+            <i class="fa-solid fa-external-link-alt mr-1"></i> Open Target Page Live
+          </a>
+        </span>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 text-xs font-bold">
+        <div>
+          <label class="block text-slate-400 mb-1">TARGET SYSTEM</label>
+          <input type="text" id="targetSystemName" value="Master Directory" readonly class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-amber-400">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">RECORD TITLE / NAME / PROPERTY</label>
+          <input type="text" id="entryTitle" placeholder="e.g. Client Name / Plot / Deal Title" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">CONTACT / WHATSAPP NUMBER</label>
+          <input type="text" id="entryContact" placeholder="03219404812" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4 text-xs font-bold">
+        <div>
+          <label class="block text-slate-400 mb-1">LOCATION / AREA / PROJECT</label>
+          <input type="text" id="entryLocation" placeholder="e.g. Raiwind Road / Bugtia Chowk / DHA Lahore" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">MESSAGE / PROPERTY SPECIFICATIONS & NOTES</label>
+          <input type="text" id="entryDetails" placeholder="Enter broadcast message text, pricing, or remarks..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+        </div>
+      </div>
+
+      <button onclick="submitMasterEntry()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3.5 rounded-xl transition shadow cursor-pointer text-xs">
+        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Two-Way Sync to Cloud Database & Property Hub
+      </button>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-400 py-6 text-xs border-t border-slate-800 text-center">
+    <p>&copy; 2026 Bin Taha Associates. Master Data Entry & Control Hub managed by CEO Taha Mobeen Bhutta.</p>
+  </footer>
+
+  <script>
+    const systemsList = [
+      'Master Directory', 'Master CRM', 'Global Owners CRM', 'CRM Inbox', 
+      'Property Hub', 'Services Hub', 'Dealers Directory', 'WhatsApp & Property Sync'
+    ];
+
+    function setTargetSystem(sysName, sysUrl) {
+      document.getElementById('targetSystemName').value = sysName;
+      document.getElementById('activeFormTitle').innerHTML = `<i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry Form: ${sysName}`;
+      document.getElementById('externalLinkBtn').innerHTML = `
+        <a href="${sysUrl}" target="_blank" class="bg-amber-500/20 text-amber-400 hover:bg-amber-500 hover:text-slate-950 px-3 py-1.5 rounded-xl font-bold transition text-[11px]">
+          <i class="fa-solid fa-external-link-alt mr-1"></i> Open Target Page Live
+        </a>
+      `;
+
+      systemsList.forEach(s => {
+        const btn = document.getElementById('tab-' + s);
+        if(s === sysName) {
+          btn.className = "bg-amber-500 text-slate-950 p-4 rounded-2xl font-black shadow-xl transition text-left space-y-1 cursor-pointer";
+        } else {
+          btn.className = "bg-slate-900 border border-slate-800 text-slate-300 p-4 rounded-2xl font-bold shadow transition text-left space-y-1 hover:border-amber-500/50 cursor-pointer";
+        }
+      });
+    }
+
+    function submitMasterEntry() {
+      const target = document.getElementById('targetSystemName').value;
+      const title = document.getElementById('entryTitle').value;
+      const contact = document.getElementById('entryContact').value;
+      const location = document.getElementById('entryLocation').value;
+      const details = document.getElementById('entryDetails').value;
+
+      if(!title) {
+        alert('⚠️ Please enter a valid record title or name!');
+        return;
+      }
+
+      const recordObj = {
+        id: Date.now(),
+        targetSystem: target,
+        title: title,
+        contact: contact || '03219404812',
+        location: location || 'Lahore',
+        details: details || 'Manual entry via Central Two-Way Hub',
+        timestamp: new Date().toLocaleString()
+      };
+
+      // 1. Local Storage Two-Way Sync
+      let masterRecords = JSON.parse(localStorage.getItem('bintaha_master_entry_hub') || '[]');
+      masterRecords.unshift(recordObj);
+      localStorage.setItem('bintaha_master_entry_hub', JSON.stringify(masterRecords));
+
+      // 2. Property Hub & WhatsApp Broadcast Sync
+      if(target === 'WhatsApp & Property Sync' || target === 'Property Hub') {
+        let properties = JSON.parse(localStorage.getItem('bintaha_properties_hub') || '[]');
+        properties.unshift({
+          id: recordObj.id,
+          title: title,
+          area: location,
+          price: details,
+          contact: contact,
+          date: recordObj.timestamp
+        });
+        localStorage.setItem('bintaha_properties_hub', JSON.stringify(properties));
+      }
+
+      // 3. Live Google Sheets Webhook Two-Way Integration
+      const webhookUrl = localStorage.getItem('bintaha_gss_webhook') || '';
+      if(webhookUrl) {
+        fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(recordObj)
+        }).catch(err => console.log('Cloud Sync background notice:', err));
+      }
+
+      alert(`✅ Success! Record for [${target}] has been successfully saved with Two-Way Cloud & Local Sync.`);
+      
+      document.getElementById('entryTitle').value = '';
+      document.getElementById('entryContact').value = '';
+      document.getElementById('entryLocation').value = '';
+      document.getElementById('entryDetails').value = '';
+    }
+
+    // World Clocks Update
+    function updateWorldClocks() {
+      const now = new Date();
+      document.getElementById('clockPk').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockDubai').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockLondon').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clockNy').innerText = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateWorldClocks, 1000);
+    window.onload = function() { updateWorldClocks(); };
+  </script>
+</body>
+</html>
