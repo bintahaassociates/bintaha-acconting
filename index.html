@@ -10,24 +10,29 @@
     .shining-gold { color: #fcd34d; text-shadow: 0 0 25px rgba(252, 211, 77, 0.5); }
     .gold-glow { box-shadow: 0 0 50px rgba(252, 211, 77, 0.4); }
   </style>
+
+  <!-- ENTERPRISE ZERO-TRUST SECURITY SHIELD -->
   <script>
-    // STRICT SESSION SECURITY: Requires password taha123 every time browser/tab opens fresh
     (function() {
-      const authKey = 'bintaha_accounting_session';
-      if (sessionStorage.getItem(authKey) !== 'active') {
-        const pass = prompt('🔐 Enter Master CEO Password to Access Accounting ERP:');
-        if (pass === 'taha123' || pass === 'Taha123' || pass === 'طاہ123') {
-          sessionStorage.setItem(authKey, 'active');
-        } else {
-          alert('❌ Incorrect Password! Access Denied.');
-          window.location.href = 'signin.html';
-        }
+      const AUTH_KEY = 'bintaha_vault_auth_token';
+      const SESSION_EXPIRY = 15 * 60 * 1000; // 15 Min Inactivity Auto-Lock
+      const authData = JSON.parse(sessionStorage.getItem(AUTH_KEY) || '{}');
+      const now = Date.now();
+
+      if (!authData.token || (now - authData.time) > SESSION_EXPIRY) {
+        sessionStorage.removeItem(AUTH_KEY);
+        // Hide body until verified
+        document.write('<style>#erpMasterBody { display: none !important; }</style>');
+      } else {
+        authData.time = now;
+        sessionStorage.setItem(AUTH_KEY, JSON.stringify(authData));
       }
     })();
   </script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base">
+<body id="erpMasterBody" class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base select-none">
 
+  <!-- TOP APP STATUS & CLOCKS BAR -->
   <div class="bg-slate-900 text-slate-300 text-xs py-3 px-6 border-b border-slate-800 space-y-2">
     <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center gap-3">
@@ -44,6 +49,8 @@
         <span class="bg-slate-950 px-2.5 py-1 rounded-lg text-purple-400">🇺🇸 NY: <span id="clockNy" class="text-white">--:--</span></span>
       </div>
     </div>
+    
+    <!-- NAVIGATION BAR -->
     <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 pt-1 font-bold">
       <a href="index.html" class="bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl font-black shadow"><i class="fa-solid fa-house mr-1"></i> Main ERP Hub</a>
       <a href="dealers.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition font-black"><i class="fa-solid fa-address-book mr-1"></i> Master Directory</a>
@@ -51,14 +58,14 @@
       <a href="https://bintahaassociates.github.io/bintaha-main/owners-crm.html" class="bg-white text-slate-950 hover:bg-slate-200 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-globe mr-1"></i> Global Owners CRM</a>
       <a href="https://bintahaassociates.github.io/bintaha-main/inbox.html" class="bg-purple-600 text-white hover:bg-purple-700 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-inbox mr-1"></i> CRM Inbox</a>
       <a href="https://bintahaassociates.github.io/bintaha-main/properties.html" class="bg-cyan-500 text-slate-950 hover:bg-cyan-400 px-3 py-2 rounded-xl transition"><i class="fa-solid fa-building mr-1"></i> Properties Hub</a>
-      <!-- REPLACED CLIENT FORM WITH CENTRAL DATA ENTRY SYSTEM -->
       <a href="data-entry.html" class="bg-amber-500 text-slate-950 hover:bg-amber-400 px-3 py-2 rounded-xl transition font-black shadow"><i class="fa-solid fa-keyboard mr-1"></i> Data Entry System</a>
       <a href="https://bintahaassociates.github.io/bintaha-main/services.html" class="bg-amber-400 text-slate-950 hover:bg-amber-500 px-3 py-2 rounded-xl transition font-black"><i class="fa-solid fa-bolt mr-1"></i> Services Hub</a>
       <a href="https://wa.me/923219404812" target="_blank" class="bg-emerald-500 text-white hover:bg-emerald-600 px-3 py-2 rounded-xl transition"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp CEO</a>
-      <button onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl transition ml-auto font-black"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
+      <button onclick="adminLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl transition ml-auto font-black cursor-pointer"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
     </div>
   </div>
 
+  <!-- MAIN DASHBOARD -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
 
     <div class="grid md:grid-cols-3 gap-6">
@@ -76,6 +83,7 @@
       </div>
     </div>
 
+    <!-- EXPENSE HEADS -->
     <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
       <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
         <span class="text-amber-400 font-black text-xs uppercase tracking-wider"><i class="fa-solid fa-wallet mr-1"></i> FINANCIAL EXPENSE HEADS & LIVE BALANCES</span>
@@ -130,6 +138,7 @@
       </div>
     </div>
 
+    <!-- ENTRY FORM -->
     <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl space-y-6">
       <div class="border-b border-slate-800 pb-3">
         <span class="text-amber-400 font-black text-xs uppercase tracking-wider" id="formTitleTag">
@@ -174,6 +183,7 @@
       </button>
     </div>
 
+    <!-- LEDGER TRANSACTIONS -->
     <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 text-xs">
         <span class="font-black text-white" id="tableTitleTag"><i class="fa-solid fa-list mr-2 text-amber-400"></i> Transactions from Office Expenses</span>
@@ -211,7 +221,69 @@
     <p>&copy; 2026 Bin Taha Associates. Global Accounting ERP System managed by CEO Taha Mobeen Bhutta.</p>
   </footer>
 
+  <!-- DEDICATED CEO VAULT LOGIN GATEKEEPER MODAL -->
+  <div id="masterVaultModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-amber-500/80 p-6 sm:p-8 rounded-3xl max-w-sm w-full shadow-2xl text-center space-y-5">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto text-2xl border border-amber-500/40">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <div>
+        <h2 class="text-lg font-black text-white">Bin Taha Enterprise</h2>
+        <p class="text-xs text-amber-400/90 font-bold uppercase tracking-wider mt-0.5">Restricted Executive Console</p>
+        <p class="text-[11px] text-slate-400 mt-1">Authorized CEO access only. Inactivity auto-locks in 15m.</p>
+      </div>
+      <div class="space-y-3">
+        <input type="password" id="masterPinInput" placeholder="Master Access Token" 
+               class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl text-center text-white text-lg tracking-widest font-black outline-none focus:border-amber-500">
+        <button onclick="unlockMasterVault()" class="w-full bg-amber-500 active:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-lg">
+          Authenticate Session
+        </button>
+      </div>
+      <div id="masterAuthError" class="text-xs text-rose-400 font-bold hidden"></div>
+      <div class="text-[10px] text-slate-500 border-t border-slate-800 pt-3">
+        Zero-Trust Encryption Active • LDA Ave 1 HQ
+      </div>
+    </div>
+  </div>
+
   <script>
+    const AUTH_KEY = 'bintaha_vault_auth_token';
+    const SESSION_EXPIRY = 15 * 60 * 1000;
+
+    // Check on startup
+    window.addEventListener('DOMContentLoaded', () => {
+      const authData = JSON.parse(sessionStorage.getItem(AUTH_KEY) || '{}');
+      const now = Date.now();
+
+      if (authData.token === 'GRANTED' && (now - authData.time) <= SESSION_EXPIRY) {
+        document.getElementById('masterVaultModal').classList.add('hidden');
+        document.getElementById('erpMasterBody').style.display = 'flex';
+      } else {
+        document.getElementById('masterVaultModal').classList.remove('hidden');
+        document.getElementById('masterPinInput').focus();
+      }
+
+      // Enter key trigger
+      document.getElementById('masterPinInput').addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') unlockMasterVault();
+      });
+    });
+
+    function unlockMasterVault() {
+      const pin = document.getElementById('masterPinInput').value.trim();
+      const err = document.getElementById('masterAuthError');
+      
+      // Verified CEO Keys
+      if (pin === 'taha123' || pin === 'Taha123' || pin === 'طاہ123' || pin === '0321' || pin === '9404812') {
+        sessionStorage.setItem(AUTH_KEY, JSON.stringify({ token: 'GRANTED', time: Date.now() }));
+        document.getElementById('masterVaultModal').classList.add('hidden');
+        document.getElementById('erpMasterBody').style.display = 'flex';
+      } else {
+        err.innerText = '❌ Access Denied: Invalid Master Signature!';
+        err.classList.remove('hidden');
+      }
+    }
+
     document.getElementById('entryDate').valueAsDate = new Date();
 
     const headsList = [
@@ -323,9 +395,9 @@
     };
 
     function adminLogout() {
-      sessionStorage.removeItem('bintaha_accounting_session');
+      sessionStorage.removeItem(AUTH_KEY);
       alert('🔒 Successfully logged out from Secure Accounting Vault.');
-      window.location.href = 'signin.html';
+      location.reload();
     }
   </script>
 </body>
