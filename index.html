@@ -10,27 +10,8 @@
     .shining-gold { color: #fcd34d; text-shadow: 0 0 25px rgba(252, 211, 77, 0.5); }
     .gold-glow { box-shadow: 0 0 50px rgba(252, 211, 77, 0.4); }
   </style>
-
-  <!-- ENTERPRISE ZERO-TRUST SECURITY SHIELD -->
-  <script>
-    (function() {
-      const AUTH_KEY = 'bintaha_vault_auth_token';
-      const SESSION_EXPIRY = 15 * 60 * 1000; // 15 Min Inactivity Auto-Lock
-      const authData = JSON.parse(sessionStorage.getItem(AUTH_KEY) || '{}');
-      const now = Date.now();
-
-      if (!authData.token || (now - authData.time) > SESSION_EXPIRY) {
-        sessionStorage.removeItem(AUTH_KEY);
-        // Hide body until verified
-        document.write('<style>#erpMasterBody { display: none !important; }</style>');
-      } else {
-        authData.time = now;
-        sessionStorage.setItem(AUTH_KEY, JSON.stringify(authData));
-      }
-    })();
-  </script>
 </head>
-<body id="erpMasterBody" class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base select-none">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between text-base select-none">
 
   <!-- TOP APP STATUS & CLOCKS BAR -->
   <div class="bg-slate-900 text-slate-300 text-xs py-3 px-6 border-b border-slate-800 space-y-2">
@@ -250,20 +231,17 @@
     const AUTH_KEY = 'bintaha_vault_auth_token';
     const SESSION_EXPIRY = 15 * 60 * 1000;
 
-    // Check on startup
     window.addEventListener('DOMContentLoaded', () => {
       const authData = JSON.parse(sessionStorage.getItem(AUTH_KEY) || '{}');
       const now = Date.now();
 
       if (authData.token === 'GRANTED' && (now - authData.time) <= SESSION_EXPIRY) {
         document.getElementById('masterVaultModal').classList.add('hidden');
-        document.getElementById('erpMasterBody').style.display = 'flex';
       } else {
         document.getElementById('masterVaultModal').classList.remove('hidden');
         document.getElementById('masterPinInput').focus();
       }
 
-      // Enter key trigger
       document.getElementById('masterPinInput').addEventListener('keyup', (e) => {
         if (e.key === 'Enter') unlockMasterVault();
       });
@@ -273,11 +251,9 @@
       const pin = document.getElementById('masterPinInput').value.trim();
       const err = document.getElementById('masterAuthError');
       
-      // Verified CEO Keys
       if (pin === 'taha123' || pin === 'Taha123' || pin === 'طاہ123' || pin === '0321' || pin === '9404812') {
         sessionStorage.setItem(AUTH_KEY, JSON.stringify({ token: 'GRANTED', time: Date.now() }));
         document.getElementById('masterVaultModal').classList.add('hidden');
-        document.getElementById('erpMasterBody').style.display = 'flex';
       } else {
         err.innerText = '❌ Access Denied: Invalid Master Signature!';
         err.classList.remove('hidden');
