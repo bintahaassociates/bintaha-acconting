@@ -103,6 +103,46 @@
       </div>
     </div>
 
+    <!-- Add Record Form (Two-Way Sync) -->
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
+      <div class="flex items-center gap-2 text-sm font-black text-amber-400">
+        <i class="fa-solid fa-user-plus"></i> <span id="formTitle">Add New Record</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs font-bold">
+        <div>
+          <label class="text-slate-400 block mb-1">ID / CODE</label>
+          <input type="text" id="formId" placeholder="Auto or Enter ID..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">NAME / PROPERTY IDENTIFIER</label>
+          <input type="text" id="formName" placeholder="Plot / Business Name..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">OWNER / CONTACT PERSON</label>
+          <input type="text" id="formOwner" placeholder="Person Name..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">PHONE / WHATSAPP</label>
+          <input type="text" id="formPhone" placeholder="03XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">SOCIETY / SPECIALITY / BLOCK</label>
+          <input type="text" id="formSub" placeholder="e.g. LDA Avenue 1 - Block A" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">CNIC</label>
+          <input type="text" id="formCnic" placeholder="35202-XXXXXXX-X" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-slate-400 block mb-1">ADDRESS</label>
+          <input type="text" id="formAddress" placeholder="Full residential/office address..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
+        </div>
+      </div>
+      <button onclick="saveRecordToGoogleSheet()" id="btnSaveSync" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition shadow flex items-center justify-center gap-2 cursor-pointer">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Save & Sync to Google Sheet
+      </button>
+    </div>
+
     <!-- Category Tabs Bar -->
     <div class="flex flex-wrap gap-2 bg-slate-900 p-3 rounded-2xl border border-slate-800 text-xs font-black">
       <button onclick="switchCategory('Dealers')" id="tab-Dealers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-handshake mr-1"></i> Dealers</button>
@@ -160,6 +200,16 @@
 
   <script>
     const SPREADSHEET_ID = "1Bozr8u4F7k4oAl8k3GKclxSDCxTTHOn3ZqGc2STNiQ";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwdOhFXif1OLmqWmMuLa28GmyzZlQW1S51i4ZhGIqAMaRfmgQMNUYoswTMfruec2ED7/exec";
+
+    const SHEET_TAB_MAPPING = {
+      'Dealers': 'Dealers',
+      'Allottees': 'Allottees',
+      'Web_Clients': 'Web_Clients',
+      'Investors': 'Investors',
+      'Contractors': 'Contractors',
+      'Suppliers': 'Suppliers'
+    };
 
     let liveMasterData = {
       Dealers: [],
@@ -184,46 +234,87 @@
     }
 
     async function fetchSheetData(tabName) {
+      // 1. سب سے پہلے گوگل ایپس اسکرپٹ کے ذریعے ڈیٹا لانے کی کوشش
+      try {
+        const appRes = await fetch(`${WEB_APP_URL}?sheet=${encodeURIComponent(tabName)}&action=read`);
+        const appData = await appRes.json();
+        if (Array.isArray(appData) && appData.length > 0) {
+          return appData.map(r => ({
+            id: String(r[0] || r.id || '').trim(),
+            name: String(r[1] || r.name || '').trim(),
+            owner: String(r[2] || r.owner || '').trim(),
+            contact: String(r[3] || r.contact || '').trim(),
+            sub: String(r[4] || r.sub || '').trim(),
+            cnic: String(r[5] || r.cnic || '').trim(),
+            address: String(r[6] || r.address || '').trim(),
+            history: String(r[7] || r.history || 'اصل الاٹی').trim()
+          }));
+        }
+      } catch (e) {
+        console.warn("Apps Script fetch fallback to GViz:", e);
+      }
+
+      // 2. بیک اپ طریقہ: گوگل شیٹ GViz API
       const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
       const res = await fetch(url);
       const txt = await res.text();
       
-      const jsonString = txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1);
-      const data = JSON.parse(jsonString);
+      const startIdx = txt.indexOf('{');
+      const endIdx = txt.lastIndexOf('}');
+      if (startIdx === -1 || endIdx === -1) return [];
 
-      const rows = data.table.rows;
+      const jsonString = txt.substring(startIdx, endIdx + 1);
+      const data = JSON.parse(jsonString);
+      const rows = data.table.rows || [];
       const records = [];
 
       for (let i = 0; i < rows.length; i++) {
         const c = rows[i].c;
-        if (!c || !c[0] || !c[0].v) continue;
+        if (!c) continue;
+
+        let idVal = c[0] && c[0].v !== null ? String(c[0].v).trim() : '';
+        let nameVal = c[1] && c[1].v !== null ? String(c[1].v).trim() : '';
+        let ownerVal = c[2] && c[2].v !== null ? String(c[2].v).trim() : '';
+
+        // ہیڈر لائن کو نظر انداز کریں
+        if (idVal.toLowerCase() === 'id/code' || nameVal.toLowerCase() === 'name/entity') continue;
+        if (!idVal && !nameVal && !ownerVal) continue;
 
         records.push({
-          id: c[0] ? String(c[0].v).trim() : '',
-          name: c[1] ? String(c[1].v).trim() : '',
-          owner: c[2] ? String(c[2].v).trim() : '',
-          contact: c[3] ? String(c[3].v).trim() : '',
-          sub: c[4] ? String(c[4].v).trim() : '',
-          cnic: c[5] ? String(c[5].v).trim() : '',
-          address: c[6] ? String(c[6].v).trim() : '',
-          history: c[7] ? String(c[7].v).trim() : 'اصل الاٹی'
+          id: idVal,
+          name: nameVal,
+          owner: ownerVal,
+          contact: c[3] && c[3].v !== null ? String(c[3].v).trim() : 'Pending Mobile',
+          sub: c[4] && c[4].v !== null ? String(c[4].v).trim() : '',
+          cnic: c[5] && c[5].v !== null ? String(c[5].v).trim() : '',
+          address: c[6] && c[6].v !== null ? String(c[6].v).trim() : '',
+          history: c[7] && c[7].v !== null ? String(c[7].v).trim() : 'اصل الاٹی'
         });
       }
 
       return records;
     }
 
-    async function loadLiveData() {
+    async function loadCategoryData(category) {
       const tbody = document.getElementById('directoryTableBody');
-      tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> گوگل شیٹ سے لائیو ڈیٹا لوڈ ہو رہا ہے...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> ${category} کا لائیو ڈیٹا لوڈ ہو رہا ہے...</td></tr>`;
+
+      const tabName = SHEET_TAB_MAPPING[category] || category;
 
       try {
-        liveMasterData['Allottees'] = await fetchSheetData('Allottees');
+        const data = await fetchSheetData(tabName);
+        liveMasterData[category] = data;
       } catch (err) {
-        console.error("Allottees load error:", err);
+        console.error(`${category} load error:`, err);
+        liveMasterData[category] = [];
       }
 
-      switchCategory(currentCategory);
+      populateSubFilters(category);
+      renderTable(liveMasterData[category] || []);
+    }
+
+    async function loadLiveData() {
+      await loadCategoryData(currentCategory);
     }
 
     function switchCategory(category) {
@@ -239,14 +330,19 @@
       }
 
       document.getElementById('activeCategoryTitle').innerText = "Current View: " + category;
+      document.getElementById('formTitle').innerText = "Add New Record (" + category + ")";
 
-      populateSubFilters(category);
-      renderTable(liveMasterData[category] || []);
+      if (!liveMasterData[category] || liveMasterData[category].length === 0) {
+        loadCategoryData(category);
+      } else {
+        populateSubFilters(category);
+        renderTable(liveMasterData[category]);
+      }
     }
 
     function populateSubFilters(category) {
       const select = document.getElementById('subFilterSelect');
-      select.innerHTML = '<option value="all">تمام کیٹیگریز اور بلاکس (All)</option>';
+      select.innerHTML = '<option value="all">تمام سوسائٹیز اور کیٹیگریز (All)</option>';
 
       let items = liveMasterData[category] || [];
       let subs = [...new Set(items.map(i => i.sub).filter(Boolean))];
@@ -258,7 +354,7 @@
 
     function renderTable(list) {
       const tbody = document.getElementById('directoryTableBody');
-      document.getElementById('recordCountBadge').innerText = `کل ریکارڈز: ${list.length}`;
+      document.getElementById('recordCountBadge').innerText = `کل ریکارڈز: ${list ? list.length : 0}`;
 
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">کوئی ریکارڈ نہیں ملا۔ براۂ کرم گوگل شیٹ چیک کریں۔</td></tr>`;
@@ -320,12 +416,67 @@
       let filtered = items.filter(i => 
         String(i.name).toLowerCase().includes(query) || 
         String(i.contact).toLowerCase().includes(query) || 
-        String(i.owner).toLowerCase().includes(query) ||
-        String(i.sub).toLowerCase().includes(query) ||
-        String(i.cnic).toLowerCase().includes(query) ||
+        String(i.owner).toLowerCase().includes(query) || 
+        String(i.sub).toLowerCase().includes(query) || 
+        String(i.cnic).toLowerCase().includes(query) || 
         String(i.id).toLowerCase().includes(query)
       );
       renderTable(filtered);
+    }
+
+    // ٹو وے سنک: ویب سائٹ سے گوگل شیٹ میں نیا ڈیٹا محفوظ کرنا
+    async function saveRecordToGoogleSheet() {
+      const btn = document.getElementById('btnSaveSync');
+      const tabName = SHEET_TAB_MAPPING[currentCategory] || currentCategory;
+
+      const payload = {
+        sheet: tabName,
+        id: document.getElementById('formId').value.trim() || `[${currentCategory}]`,
+        name: document.getElementById('formName').value.trim(),
+        owner: document.getElementById('formOwner').value.trim(),
+        phone: document.getElementById('formPhone').value.trim() || 'Pending Mobile',
+        sub: document.getElementById('formSub').value.trim(),
+        cnic: document.getElementById('formCnic').value.trim(),
+        address: document.getElementById('formAddress').value.trim(),
+        history: 'اصل الاٹی'
+      };
+
+      if (!payload.name && !payload.owner) {
+        alert('براہ کرم کم از کم نام یا پلاٹ کا اندراج کریں!');
+        return;
+      }
+
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> گوگل شیٹ میں سنک ہو رہا ہے...';
+      btn.disabled = true;
+
+      try {
+        await fetch(WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        alert('✅ ریکارڈ کامیابی کے ساتھ گوگل شیٹ میں شامل ہو گیا!');
+        
+        // فیلڈز خالی کریں
+        document.getElementById('formId').value = '';
+        document.getElementById('formName').value = '';
+        document.getElementById('formOwner').value = '';
+        document.getElementById('formPhone').value = '';
+        document.getElementById('formSub').value = '';
+        document.getElementById('formCnic').value = '';
+        document.getElementById('formAddress').value = '';
+
+        // لائیو ریفریش
+        await loadCategoryData(currentCategory);
+      } catch (err) {
+        alert('خرابی: ڈیٹا محفوظ نہیں ہو سکا۔');
+        console.error(err);
+      } finally {
+        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Save & Sync to Google Sheet';
+        btn.disabled = false;
+      }
     }
 
     window.onload = function() {
