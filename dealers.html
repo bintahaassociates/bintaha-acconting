@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
+    // STRICT SESSION SECURITY: Requires password taha123 every time browser/tab opens fresh
     (function() {
       const authKey = 'bintaha_dealers_session';
       if (sessionStorage.getItem(authKey) !== 'active') {
@@ -217,9 +218,8 @@
       document.getElementById('calcResult').innerText = "Rs. " + res.toLocaleString('en-PK');
     }
 
-    // مخصوص ٹیب کا ڈیٹا براہ راست Google Apps Script سے لانا
     async function loadLiveData(category) {
-      document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> ${category} کا لائیو ڈیٹا لوڈ ہو رہا ہے...</td></tr>`;
+      document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> ${category} ka live data load ho raha hai...</td></tr>`;
       document.getElementById('recordCountBadge').innerText = "Total: Loading...";
 
       try {
@@ -236,15 +236,32 @@
             return "";
           };
 
-          let id = getVal(['ID/Code', 'ID', 'id', 'Code']) || (category.slice(0,3).toUpperCase() + '-' + (idx+1));
-          let name = getVal(['Name/Entity', 'Name', 'name', 'Plot', 'Entity']) || 'N/A';
-          let owner = getVal(['Contact Person / Owner', 'Owner', 'owner', 'Name', 'Allottee']) || 'N/A';
-          let contact = getVal(['Phone / WhatsApp', 'Phone', 'phone', 'contact', 'Mobile']) || 'Pending Mobile';
-          let sub = getVal(['Sorting / Society / Speciality', 'Sorting', 'sub', 'Society', 'Speciality']) || 'General';
+          // Column A: Sr No ya Dealer ID / Code
+          let id = getVal(['Sr No', 'ID/Code', 'ID', 'Dealer ID', 'id', 'Code']) || (category.slice(0,3).toUpperCase() + '-' + (idx+1));
           
-          let addr = getVal(['Address', 'details', 'Address / Details', 'Transfer History']);
+          // Column B: Client Name ya Dealer / Office Name
+          let name = getVal(['Client Name', 'Dealer / Office Name', 'Name/Entity', 'Name', 'name', 'Plot', 'Entity']) || 'N/A';
+          
+          // Column C: Owner Name ya Contact Person
+          let owner = getVal(['Owner / CEO Name', 'Contact Person / Owner', 'Owner', 'owner', 'Name', 'Allottee']) || name;
+          
+          // Column C: Mobile Number
+          let contact = getVal(['Mobile Number', 'Contact / WhatsApp Number', 'Phone / WhatsApp', 'Phone', 'phone', 'contact', 'Mobile']) || 'Pending Mobile';
+          
+          // Column D: Category ya Society
+          let sub = getVal(['Category', 'Operating Society / Speciality', 'Sorting / Society / Speciality', 'Sorting', 'sub', 'Society', 'Speciality']) || 'Dealer';
+          
+          // Column E & F: Status, Address aur baaki details
+          let status = getVal(['Status', 'status']);
+          let addr = getVal(['Office Address', 'Address', 'details', 'Address / Details', 'Transfer History']);
           let cnic = getVal(['CNIC', 'cnic', 'NIC']);
-          let details = (cnic ? 'CNIC: ' + cnic + ' | ' : '') + addr;
+          
+          let detailsArr = [];
+          if (status) detailsArr.push('Status: ' + status);
+          if (cnic) detailsArr.push('CNIC: ' + cnic);
+          if (addr) detailsArr.push(addr);
+          
+          let details = detailsArr.join(' | ') || 'Lahore';
 
           return { id, name, owner, contact, sub, details };
         });
@@ -253,7 +270,7 @@
         renderTable(currentCategoryData);
       } catch(err) {
         console.error(err);
-        document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">❌ گوگل شیٹ سے رابطہ نہیں ہو سکا: ${err}</td></tr>`;
+        document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">❌ Google Sheet se contact nahi ho saka: ${err}</td></tr>`;
       }
     }
 
@@ -303,7 +320,7 @@
       document.getElementById('recordCountBadge').innerText = `Total: ${list.length} Record(s)`;
       
       if(!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">کوئی ریکارڈ نہیں ملا۔ براہ کرم گوگل شیٹ چیک کریں۔</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Koi record nahi mila. Barah-e-karam Google Sheet check karein.</td></tr>`;
         return;
       }
 
@@ -312,7 +329,7 @@
         let phone = String(item.contact || '');
         let cleanPhone = phone.replace(/\D/g,'');
         let waNumber = cleanPhone.startsWith('0') ? '92' + cleanPhone.slice(1) : cleanPhone;
-        let defaultMsg = encodeURIComponent(`السلام علیکم ${item.owner || ''} صاحب! بن طہٰ ایسوسی ایٹس (CEO: طاہ مبین بھٹا) کی طرف سے آپ کو خوش آمدید۔`);
+        let defaultMsg = encodeURIComponent(`Assalam-o-Alaikum ${item.owner || ''} Sahab! Bin Taha Associates (CEO: Taha Mobeen Bhutta) ki taraf se khush-amdeed.`);
 
         html += `
           <tr>
@@ -340,7 +357,7 @@
       const details = document.getElementById('inputDetails').value.trim();
 
       if(!name || !contact) {
-        alert('⚠️ نام اور فون نمبر لکھنا لازمی ہے!');
+        alert('⚠️ Naam aur phone number likhna zaroori hai!');
         return;
       }
 
@@ -369,17 +386,17 @@
         let result = await res.json();
         
         if(result.status === 'success') {
-          alert(`✅ ریکارڈ گوگل شیٹ میں محفوظ ہو گیا!`);
+          alert(`✅ Record Google Sheet mein mehfooz ho gaya!`);
           document.getElementById('inputName').value = '';
           document.getElementById('inputOwner').value = '';
           document.getElementById('inputContact').value = '';
           document.getElementById('inputDetails').value = '';
           await loadLiveData(currentCategory);
         } else {
-          alert(`❌ خرابی: ${result.message || 'Error'}`);
+          alert(`❌ Kharabi: ${result.message || 'Error'}`);
         }
       } catch(err) {
-        alert(`❌ سنک نہیں ہو سکا: ${err}`);
+        alert(`❌ Sync nahi ho saka: ${err}`);
       } finally {
         btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Sync to Google Sheet`;
         btn.disabled = false;
@@ -414,7 +431,7 @@
 
     function adminLogout() {
       sessionStorage.removeItem('bintaha_dealers_session');
-      alert('🔒 لاگ آؤٹ مکمل ہو گیا۔');
+      alert('🔒 Log out mukammal ho gaya.');
       window.location.href = 'signin.html';
     }
   </script>
