@@ -199,6 +199,9 @@
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxLhuYcUBTXtwdH3XVPaPiv6cSmxfM4g7spFsZ36Nk3uT61voWUnqG5O_I9LZLmgMG/exec";
 
+    // Google Spreadsheet ID from your open tab
+    const SPREADSHEET_ID = "1Bozr8u4F7k4oAl8k3GKclxSDCxTTHOn3ZqGc2STNiQ";
+
     let liveMasterData = {
       Dealers: [],
       Allottees: [],
@@ -232,16 +235,84 @@
       document.getElementById('calcResult').innerText = "Rs. " + res.toLocaleString('en-PK');
     }
 
+    // Two-Way Data Loader: Tries Web App first, then falls back directly to Google Sheet CSV
     async function loadLiveData() {
+      document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Syncing live records from Google Sheet...</td></tr>`;
+      
+      let loadedFromWebApp = false;
       try {
         let res = await fetch(WEB_APP_URL);
         let json = await res.json();
-        liveMasterData = json;
-        switchCategory(currentCategory);
+        if (json && (json.Allottees || json.Dealers)) {
+          liveMasterData = json;
+          loadedFromWebApp = true;
+        }
       } catch(err) {
-        console.error(err);
-        document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">❌ Error connecting to Google Sheet: ${err}</td></tr>`;
+        console.warn("Web App fetch failed or format mismatched, falling back to direct sheet sync...", err);
       }
+
+      // If Web App returned empty or failed, fetch directly from Google Sheet CSV
+      if (!loadedFromWebApp || !liveMasterData.Allottees || liveMasterData.Allottees.length === 0) {
+        try {
+          await fetchSheetTabDirectly("Allottees");
+        } catch (e) {
+          console.error("Direct Sheet sync error:", e);
+        }
+      }
+
+      switchCategory(currentCategory);
+    }
+
+    // Direct Google Sheet Tab Reader
+    async function fetchSheetTabDirectly(tabName) {
+      const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+      const response = await fetch(csvUrl);
+      const csvText = await response.text();
+      
+      const rows = parseCSV(csvText);
+      if (rows.length <= 1) return;
+
+      const records = [];
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length === 0 || !row[0]) continue;
+
+        records.push({
+          id: row[0] || '',
+          name: row[1] || '',
+          owner: row[2] || '',
+          contact: row[3] || '',
+          sub: row[4] || '',
+          cnic: row[5] || '',
+          details: (row[6] || '') + (row[7] ? ' | History: ' + row[7] : '')
+        });
+      }
+
+      liveMasterData[tabName] = records;
+    }
+
+    function parseCSV(text) {
+      let p = '', c = '', r = [];
+      let q = false;
+      let row = [''];
+      for (let i = 0; i < text.length; i++) {
+        c = text[i];
+        let next = text[i+1];
+        if (c === '"') {
+          if (q && next === '"') { row[row.length - 1] += '"'; i++; }
+          else { q = !q; }
+        } else if (c === ',' && !q) {
+          row.push('');
+        } else if ((c === '\r' || c === '\n') && !q) {
+          if (c === '\r' && next === '\n') { i++; }
+          r.push(row);
+          row = [''];
+        } else {
+          row[row.length - 1] += c;
+        }
+      }
+      if (row.length > 1 || row[0] !== '') { r.push(row); }
+      return r;
     }
 
     function switchCategory(category) {
@@ -281,7 +352,7 @@
       select.innerHTML = '<option value="all">All Sub-Categories / Societies</option>';
       
       let items = liveMasterData[category] || [];
-      let subs = [...new Set(items.map(i => i.sub))];
+      let subs = [...new Set(items.map(i => i.sub).filter(Boolean))];
       
       subs.forEach(sub => {
         select.innerHTML += `<option value="${sub}">${sub}</option>`;
@@ -297,8 +368,11 @@
         return;
       }
 
+      // Display up to 500 rows for lightning speed rendering with pagination/search
+      const displayList = list.slice(0, 500);
       let html = '';
-      list.forEach(item => {
+      
+      displayList.forEach(item => {
         let phone = String(item.contact || '');
         let cleanPhone = phone.replace(/\D/g,'');
         let waNumber = cleanPhone.startsWith('0') ? '92' + cleanPhone.slice(1) : cleanPhone;
@@ -306,13 +380,13 @@
 
         html += `
           <tr>
-            <td class="p-3 text-amber-400 font-bold">${item.id || 'N/A'}</td>
+            <td class="p-3 text-amber-400 font-bold whitespace-nowrap">${item.id || 'N/A'}</td>
             <td class="p-3 text-white font-black">${item.name || 'N/A'}</td>
             <td class="p-3">${item.owner || 'N/A'}</td>
-            <td class="p-3 text-emerald-400 font-bold"><i class="fa-solid fa-phone mr-1"></i>${phone}</td>
-            <td class="p-3"><span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400">${item.sub || 'N/A'}</span></td>
-            <td class="p-3 text-slate-400">${item.details || 'N/A'}</td>
-            <td class="p-3 text-center space-x-2">
+            <td class="p-3 text-emerald-400 font-bold whitespace-nowrap"><i class="fa-solid fa-phone mr-1"></i>${phone}</td>
+            <td class="p-3"><span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400 whitespace-nowrap">${item.sub || 'N/A'}</span></td>
+            <td class="p-3 text-slate-400 max-w-xs truncate" title="${item.details || ''}">${item.details || 'N/A'}</td>
+            <td class="p-3 text-center space-x-2 whitespace-nowrap">
               <a href="tel:${phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg inline-block transition" title="Call Now"><i class="fa-solid fa-phone"></i></a>
               <a href="https://wa.me/${waNumber}?text=${defaultMsg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg inline-block transition font-bold" title="Send WhatsApp Campaign"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
             </td>
@@ -383,7 +457,7 @@
       if(subVal === 'all') {
         renderTable(items);
       } else {
-        let filtered = items.filter(i => i.sub === subVal);
+        let filtered = items.filter(i => String(i.sub).includes(subVal));
         renderTable(filtered);
       }
     }
@@ -397,7 +471,8 @@
         String(i.contact).toLowerCase().includes(query) || 
         String(i.owner).toLowerCase().includes(query) ||
         String(i.sub).toLowerCase().includes(query) ||
-        String(i.details).toLowerCase().includes(query)
+        String(i.details).toLowerCase().includes(query) ||
+        String(i.id).toLowerCase().includes(query)
       );
       renderTable(filtered);
     }
