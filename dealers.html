@@ -197,7 +197,8 @@
   </footer>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxLhuYcUBTXtwdH3XVPaPiv6cSmxfM4g7spFsZ36Nk3uT61voWUnqG5O_I9LZLmgMG/exec";
+    // درست اور فعال ویب ایپ لنک
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwdOhFXif1OLmqWmMuLa28GmyzZlQW1S51i4ZhGIqAMaRfmgQMNUYoswTMfruec2ED7/exec";
 
     let liveMasterData = {
       Dealers: [],
@@ -232,11 +233,40 @@
       document.getElementById('calcResult').innerText = "Rs. " + res.toLocaleString('en-PK');
     }
 
+    // لائیو ڈیٹا لوڈ کرنے کا مضبوط طریقہ جو دونوں فارمیٹس (Array اور Object) سنبھالتا ہے
     async function loadLiveData() {
       try {
         let res = await fetch(WEB_APP_URL);
-        let json = await res.json();
-        liveMasterData = json;
+        let raw = await res.json();
+        
+        // ہر کیٹیگری کا ڈیٹا صاف کر کے معیاری سانچے میں لانا
+        for (let key in liveMasterData) {
+          let list = raw[key] || raw[key.toLowerCase()] || [];
+          
+          liveMasterData[key] = list.map((item, idx) => {
+            if (Array.isArray(item)) {
+              return {
+                id: item[0] || (key.slice(0,3).toUpperCase() + '-' + (idx+1)),
+                name: item[1] || 'N/A',
+                owner: item[2] || 'N/A',
+                contact: item[3] || 'N/A',
+                sub: item[4] || 'General',
+                details: (item[5] ? 'CNIC: ' + item[5] + ' | ' : '') + (item[6] || '') + (item[7] ? ' | ' + item[7] : '')
+              };
+            } else if (typeof item === 'object' && item !== null) {
+              return {
+                id: item.id || item.ID || item['ID/Code'] || (key.slice(0,3).toUpperCase() + '-' + (idx+1)),
+                name: item.name || item.Name || item['Name/Entity'] || 'N/A',
+                owner: item.owner || item.Owner || item['Contact Person / Owner'] || 'N/A',
+                contact: item.contact || item.phone || item.Phone || item['Phone / WhatsApp'] || 'Pending',
+                sub: item.sub || item.Society || item['Sorting / Society / Speciality'] || 'General',
+                details: item.details || item.Address || item['Address'] || 'Lahore'
+              };
+            }
+            return null;
+          }).filter(x => x !== null);
+        }
+
         switchCategory(currentCategory);
       } catch(err) {
         console.error(err);
@@ -281,7 +311,7 @@
       select.innerHTML = '<option value="all">All Sub-Categories / Societies</option>';
       
       let items = liveMasterData[category] || [];
-      let subs = [...new Set(items.map(i => i.sub))];
+      let subs = [...new Set(items.map(i => i.sub))].filter(Boolean);
       
       subs.forEach(sub => {
         select.innerHTML += `<option value="${sub}">${sub}</option>`;
@@ -292,8 +322,8 @@
       const tbody = document.getElementById('directoryTableBody');
       document.getElementById('recordCountBadge').innerText = `Total: ${list.length} Record(s)`;
       
-      if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No records found in this category. Add via form above or directly in Google Sheet.</td></tr>`;
+      if(!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">کوئی ریکارڈ نہیں ملا۔ اوپر فارم سے نیا اندراج کریں یا شیٹ ریفریش کریں۔</td></tr>`;
         return;
       }
 
@@ -330,7 +360,7 @@
       const details = document.getElementById('inputDetails').value.trim();
 
       if(!name || !contact) {
-        alert('⚠️ Please fill in Name and Phone Number!');
+        alert('⚠️ نام اور فون نمبر لکھنا لازمی ہے!');
         return;
       }
 
@@ -358,18 +388,18 @@
         });
         let result = await res.json();
         
-        if(result.status === 'success') {
-          alert(`✅ Success! Record added to Google Sheet under "${currentCategory}".`);
+        if(result.status === 'success' || result.result === 'success') {
+          alert(`✅ ریکارڈ گوگل شیٹ میں کامیابی سے محفوظ ہو گیا!`);
           document.getElementById('inputName').value = '';
           document.getElementById('inputOwner').value = '';
           document.getElementById('inputContact').value = '';
           document.getElementById('inputDetails').value = '';
           await loadLiveData();
         } else {
-          alert(`❌ Error from Sheet: ${result.message}`);
+          alert(`❌ شیٹ کی طرف سے پیغام: ${result.message || 'Error'}`);
         }
       } catch(err) {
-        alert(`❌ Sync failed: ${err}`);
+        alert(`❌ سنک نہیں ہو سکا: ${err}`);
       } finally {
         btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Sync to Google Sheet`;
         btn.disabled = false;
@@ -395,8 +425,8 @@
       let filtered = items.filter(i => 
         String(i.name).toLowerCase().includes(query) || 
         String(i.contact).toLowerCase().includes(query) || 
-        String(i.owner).toLowerCase().includes(query) ||
-        String(i.sub).toLowerCase().includes(query) ||
+        String(i.owner).toLowerCase().includes(query) || 
+        String(i.sub).toLowerCase().includes(query) || 
         String(i.details).toLowerCase().includes(query)
       );
       renderTable(filtered);
@@ -408,7 +438,7 @@
 
     function adminLogout() {
       sessionStorage.removeItem('bintaha_dealers_session');
-      alert('🔒 Successfully logged out from Directory Hub.');
+      alert('🔒 لاگ آؤٹ مکمل ہو گیا۔');
       window.location.href = 'signin.html';
     }
   </script>
