@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
-    // STRICT SESSION SECURITY: Requires password taha123 every time browser/tab opens fresh
     (function() {
       const authKey = 'bintaha_dealers_session';
       if (sessionStorage.getItem(authKey) !== 'active') {
@@ -49,10 +48,8 @@
   <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
 
-    <!-- Utilities Bar (World Clock & Currency Converter) -->
+    <!-- Utilities Bar -->
     <div class="grid md:grid-cols-2 gap-6">
-      
-      <!-- World Clock Widget -->
       <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="bg-amber-500/10 text-amber-400 p-3 rounded-2xl text-lg">
@@ -68,7 +65,6 @@
         </div>
       </div>
 
-      <!-- Quick Currency & Rate Calculator -->
       <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <div class="bg-emerald-500/10 text-emerald-400 p-3 rounded-2xl text-lg">
@@ -91,10 +87,9 @@
           <div id="calcResult" class="text-xs font-black text-emerald-400">Rs. 280,000</div>
         </div>
       </div>
-
     </div>
 
-    <!-- Header & Search Box Section -->
+    <!-- Header & Search -->
     <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col md:flex-row justify-between items-center gap-4">
       <div>
         <h1 class="text-xl font-black text-amber-400"><i class="fa-solid fa-cloud-arrow-down mr-2"></i> Master Business & Contact Directory</h1>
@@ -102,11 +97,11 @@
       </div>
       <div class="w-full md:w-72 flex items-center gap-2">
         <input type="text" id="globalSearchInput" onkeyup="filterDirectory()" placeholder="🔍 Search records..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs text-white focus:border-amber-400 outline-none font-semibold">
-        <button onclick="loadLiveData()" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-xl transition" title="Refresh Live Data"><i class="fa-solid fa-rotate"></i></button>
+        <button onclick="loadLiveData(currentCategory)" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-xl transition" title="Refresh Live Data"><i class="fa-solid fa-rotate"></i></button>
       </div>
     </div>
 
-    <!-- Category Tabs Bar (6 Pillars) -->
+    <!-- Category Tabs Bar -->
     <div class="flex flex-wrap gap-2 bg-slate-900 p-3 rounded-2xl border border-slate-800 text-xs font-black">
       <button onclick="switchCategory('Dealers')" id="tab-Dealers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer"><i class="fa-solid fa-handshake mr-1"></i> Dealers</button>
       <button onclick="switchCategory('Allottees')" id="tab-Allottees" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-file-contract mr-1"></i> Allottees</button>
@@ -116,7 +111,7 @@
       <button onclick="switchCategory('Suppliers')" id="tab-Suppliers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-truck-ramp-box mr-1"></i> Suppliers</button>
     </div>
 
-    <!-- Dynamic Add New Record Form Section -->
+    <!-- Add Form -->
     <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
       <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
         <span class="text-amber-400 font-black text-xs uppercase tracking-wider" id="formHeading"><i class="fa-solid fa-user-plus mr-1"></i> Add New Record</span>
@@ -139,7 +134,6 @@
         <div>
           <label class="block text-slate-400 mb-1" id="labelSub">SOCIETY / SUB-CATEGORY</label>
           <select id="inputSub" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
-            <!-- Dynamically populated -->
           </select>
         </div>
         <div>
@@ -152,7 +146,7 @@
       </button>
     </div>
 
-    <!-- Sub-Sorting & Filter Bar -->
+    <!-- Filter Bar -->
     <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
       <div class="flex items-center gap-3">
         <span class="text-amber-400 uppercase tracking-wider" id="activeCategoryTitle">Current View: Dealers</span>
@@ -197,18 +191,9 @@
   </footer>
 
   <script>
-    // درست اور فعال ویب ایپ لنک
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwdOhFXif1OLmqWmMuLa28GmyzZlQW1S51i4ZhGIqAMaRfmgQMNUYoswTMfruec2ED7/exec";
 
-    let liveMasterData = {
-      Dealers: [],
-      Allottees: [],
-      Web_Clients: [],
-      Investors: [],
-      Contractors: [],
-      Suppliers: []
-    };
-
+    let currentCategoryData = [];
     let currentCategory = 'Dealers';
 
     const subCategoriesConfig = {
@@ -220,7 +205,6 @@
       Suppliers: ["Bricks & Tiles", "Sand, Bajri & Crush", "Cement & Steel", "Timber / Wood", "Hardware & Paints"]
     };
 
-    // Live World Clock Engine
     setInterval(() => {
       const now = new Date();
       document.getElementById('liveClock').innerText = now.toLocaleDateString('en-PK', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) + ' | ' + now.toLocaleTimeString('en-PK');
@@ -233,44 +217,43 @@
       document.getElementById('calcResult').innerText = "Rs. " + res.toLocaleString('en-PK');
     }
 
-    // لائیو ڈیٹا لوڈ کرنے کا مضبوط طریقہ جو دونوں فارمیٹس (Array اور Object) سنبھالتا ہے
-    async function loadLiveData() {
+    // مخصوص ٹیب کا ڈیٹا براہ راست Google Apps Script سے لانا
+    async function loadLiveData(category) {
+      document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> ${category} کا لائیو ڈیٹا لوڈ ہو رہا ہے...</td></tr>`;
+      document.getElementById('recordCountBadge').innerText = "Total: Loading...";
+
       try {
-        let res = await fetch(WEB_APP_URL);
+        let res = await fetch(`${WEB_APP_URL}?tab=${category}`);
         let raw = await res.json();
         
-        // ہر کیٹیگری کا ڈیٹا صاف کر کے معیاری سانچے میں لانا
-        for (let key in liveMasterData) {
-          let list = raw[key] || raw[key.toLowerCase()] || [];
-          
-          liveMasterData[key] = list.map((item, idx) => {
-            if (Array.isArray(item)) {
-              return {
-                id: item[0] || (key.slice(0,3).toUpperCase() + '-' + (idx+1)),
-                name: item[1] || 'N/A',
-                owner: item[2] || 'N/A',
-                contact: item[3] || 'N/A',
-                sub: item[4] || 'General',
-                details: (item[5] ? 'CNIC: ' + item[5] + ' | ' : '') + (item[6] || '') + (item[7] ? ' | ' + item[7] : '')
-              };
-            } else if (typeof item === 'object' && item !== null) {
-              return {
-                id: item.id || item.ID || item['ID/Code'] || (key.slice(0,3).toUpperCase() + '-' + (idx+1)),
-                name: item.name || item.Name || item['Name/Entity'] || 'N/A',
-                owner: item.owner || item.Owner || item['Contact Person / Owner'] || 'N/A',
-                contact: item.contact || item.phone || item.Phone || item['Phone / WhatsApp'] || 'Pending',
-                sub: item.sub || item.Society || item['Sorting / Society / Speciality'] || 'General',
-                details: item.details || item.Address || item['Address'] || 'Lahore'
-              };
+        let list = Array.isArray(raw) ? raw : (raw[category] || []);
+        
+        currentCategoryData = list.map((item, idx) => {
+          let getVal = (keys) => {
+            for (let k of keys) {
+              if (item[k] !== undefined && item[k] !== null && String(item[k]).trim() !== "") return item[k];
             }
-            return null;
-          }).filter(x => x !== null);
-        }
+            return "";
+          };
 
-        switchCategory(currentCategory);
+          let id = getVal(['ID/Code', 'ID', 'id', 'Code']) || (category.slice(0,3).toUpperCase() + '-' + (idx+1));
+          let name = getVal(['Name/Entity', 'Name', 'name', 'Plot', 'Entity']) || 'N/A';
+          let owner = getVal(['Contact Person / Owner', 'Owner', 'owner', 'Name', 'Allottee']) || 'N/A';
+          let contact = getVal(['Phone / WhatsApp', 'Phone', 'phone', 'contact', 'Mobile']) || 'Pending Mobile';
+          let sub = getVal(['Sorting / Society / Speciality', 'Sorting', 'sub', 'Society', 'Speciality']) || 'General';
+          
+          let addr = getVal(['Address', 'details', 'Address / Details', 'Transfer History']);
+          let cnic = getVal(['CNIC', 'cnic', 'NIC']);
+          let details = (cnic ? 'CNIC: ' + cnic + ' | ' : '') + addr;
+
+          return { id, name, owner, contact, sub, details };
+        });
+
+        populateSubFilters(category);
+        renderTable(currentCategoryData);
       } catch(err) {
         console.error(err);
-        document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">❌ Error connecting to Google Sheet: ${err}</td></tr>`;
+        document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">❌ گوگل شیٹ سے رابطہ نہیں ہو سکا: ${err}</td></tr>`;
       }
     }
 
@@ -302,17 +285,14 @@
         subSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
       });
 
-      populateSubFilters(category);
-      renderTable(liveMasterData[category] || []);
+      loadLiveData(category);
     }
 
     function populateSubFilters(category) {
       const select = document.getElementById('subFilterSelect');
       select.innerHTML = '<option value="all">All Sub-Categories / Societies</option>';
       
-      let items = liveMasterData[category] || [];
-      let subs = [...new Set(items.map(i => i.sub))].filter(Boolean);
-      
+      let subs = [...new Set(currentCategoryData.map(i => i.sub))].filter(Boolean);
       subs.forEach(sub => {
         select.innerHTML += `<option value="${sub}">${sub}</option>`;
       });
@@ -323,7 +303,7 @@
       document.getElementById('recordCountBadge').innerText = `Total: ${list.length} Record(s)`;
       
       if(!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">کوئی ریکارڈ نہیں ملا۔ اوپر فارم سے نیا اندراج کریں یا شیٹ ریفریش کریں۔</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">کوئی ریکارڈ نہیں ملا۔ براہ کرم گوگل شیٹ چیک کریں۔</td></tr>`;
         return;
       }
 
@@ -332,7 +312,7 @@
         let phone = String(item.contact || '');
         let cleanPhone = phone.replace(/\D/g,'');
         let waNumber = cleanPhone.startsWith('0') ? '92' + cleanPhone.slice(1) : cleanPhone;
-        let defaultMsg = encodeURIComponent(`السلام علیکم ${item.owner || ''} صاحب! بن طہٰ ایسوسی ایٹس (CEO: طاہ مبین بھٹا) کی طرف سے آپ کو خوش آمدید۔ رئیل اسٹیٹ اور کنسٹرکشن اپڈیٹس کے لیے رابطہ کریں۔`);
+        let defaultMsg = encodeURIComponent(`السلام علیکم ${item.owner || ''} صاحب! بن طہٰ ایسوسی ایٹس (CEO: طاہ مبین بھٹا) کی طرف سے آپ کو خوش آمدید۔`);
 
         html += `
           <tr>
@@ -344,7 +324,7 @@
             <td class="p-3 text-slate-400">${item.details || 'N/A'}</td>
             <td class="p-3 text-center space-x-2">
               <a href="tel:${phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg inline-block transition" title="Call Now"><i class="fa-solid fa-phone"></i></a>
-              <a href="https://wa.me/${waNumber}?text=${defaultMsg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg inline-block transition font-bold" title="Send WhatsApp Campaign"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
+              <a href="https://wa.me/${waNumber}?text=${defaultMsg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg inline-block transition font-bold" title="Send WhatsApp"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
             </td>
           </tr>
         `;
@@ -388,15 +368,15 @@
         });
         let result = await res.json();
         
-        if(result.status === 'success' || result.result === 'success') {
-          alert(`✅ ریکارڈ گوگل شیٹ میں کامیابی سے محفوظ ہو گیا!`);
+        if(result.status === 'success') {
+          alert(`✅ ریکارڈ گوگل شیٹ میں محفوظ ہو گیا!`);
           document.getElementById('inputName').value = '';
           document.getElementById('inputOwner').value = '';
           document.getElementById('inputContact').value = '';
           document.getElementById('inputDetails').value = '';
-          await loadLiveData();
+          await loadLiveData(currentCategory);
         } else {
-          alert(`❌ شیٹ کی طرف سے پیغام: ${result.message || 'Error'}`);
+          alert(`❌ خرابی: ${result.message || 'Error'}`);
         }
       } catch(err) {
         alert(`❌ سنک نہیں ہو سکا: ${err}`);
@@ -408,21 +388,17 @@
 
     function applySubSorting() {
       let subVal = document.getElementById('subFilterSelect').value;
-      let items = liveMasterData[currentCategory] || [];
-      
       if(subVal === 'all') {
-        renderTable(items);
+        renderTable(currentCategoryData);
       } else {
-        let filtered = items.filter(i => i.sub === subVal);
+        let filtered = currentCategoryData.filter(i => i.sub === subVal);
         renderTable(filtered);
       }
     }
 
     function filterDirectory() {
       let query = document.getElementById('globalSearchInput').value.toLowerCase();
-      let items = liveMasterData[currentCategory] || [];
-      
-      let filtered = items.filter(i => 
+      let filtered = currentCategoryData.filter(i => 
         String(i.name).toLowerCase().includes(query) || 
         String(i.contact).toLowerCase().includes(query) || 
         String(i.owner).toLowerCase().includes(query) || 
@@ -433,7 +409,7 @@
     }
 
     window.onload = function() {
-      loadLiveData();
+      switchCategory('Dealers');
     };
 
     function adminLogout() {
