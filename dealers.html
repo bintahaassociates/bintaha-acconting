@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
-    // STRICT SESSION SECURITY: Requires password taha123 every time browser/tab opens fresh
     (function() {
       const authKey = 'bintaha_dealers_session';
       if (sessionStorage.getItem(authKey) !== 'active') {
@@ -49,10 +48,9 @@
   <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
 
-    <!-- Utilities Bar (World Clock & Currency Converter) -->
+    <!-- Utilities Bar -->
     <div class="grid md:grid-cols-2 gap-6">
-      
-      <!-- World Clock Widget -->
+      <!-- Live Clock -->
       <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="bg-amber-500/10 text-amber-400 p-3 rounded-2xl text-lg">
@@ -68,7 +66,7 @@
         </div>
       </div>
 
-      <!-- Quick Currency & Rate Calculator -->
+      <!-- Currency Calculator -->
       <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-xl flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <div class="bg-emerald-500/10 text-emerald-400 p-3 rounded-2xl text-lg">
@@ -91,7 +89,6 @@
           <div id="calcResult" class="text-xs font-black text-emerald-400">Rs. 280,000</div>
         </div>
       </div>
-
     </div>
 
     <!-- Header & Search Box Section -->
@@ -101,65 +98,29 @@
         <p class="text-xs text-slate-400 mt-1">Live synchronized with Google Sheets across Dealers, Allottees, Web Leads, Investors, Contractors, and Suppliers.</p>
       </div>
       <div class="w-full md:w-72 flex items-center gap-2">
-        <input type="text" id="globalSearchInput" onkeyup="filterDirectory()" placeholder="🔍 Search records..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs text-white focus:border-amber-400 outline-none font-semibold">
+        <input type="text" id="globalSearchInput" onkeyup="filterDirectory()" placeholder="🔍 Search plot, owner, phone..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs text-white focus:border-amber-400 outline-none font-semibold">
         <button onclick="loadLiveData()" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-xl transition" title="Refresh Live Data"><i class="fa-solid fa-rotate"></i></button>
       </div>
     </div>
 
-    <!-- Category Tabs Bar (6 Pillars) -->
+    <!-- Category Tabs Bar -->
     <div class="flex flex-wrap gap-2 bg-slate-900 p-3 rounded-2xl border border-slate-800 text-xs font-black">
-      <button onclick="switchCategory('Dealers')" id="tab-Dealers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer"><i class="fa-solid fa-handshake mr-1"></i> Dealers</button>
-      <button onclick="switchCategory('Allottees')" id="tab-Allottees" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-file-contract mr-1"></i> Allottees</button>
+      <button onclick="switchCategory('Dealers')" id="tab-Dealers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-handshake mr-1"></i> Dealers</button>
+      <button onclick="switchCategory('Allottees')" id="tab-Allottees" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer font-black"><i class="fa-solid fa-file-contract mr-1"></i> Allottees</button>
       <button onclick="switchCategory('Web_Clients')" id="tab-Web_Clients" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-globe mr-1"></i> Web Clients</button>
       <button onclick="switchCategory('Investors')" id="tab-Investors" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-vault mr-1"></i> Investors</button>
       <button onclick="switchCategory('Contractors')" id="tab-Contractors" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-helmet-safety mr-1"></i> Contractors</button>
       <button onclick="switchCategory('Suppliers')" id="tab-Suppliers" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-truck-ramp-box mr-1"></i> Suppliers</button>
     </div>
 
-    <!-- Dynamic Add New Record Form Section -->
-    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl space-y-4">
-      <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
-        <span class="text-amber-400 font-black text-xs uppercase tracking-wider" id="formHeading"><i class="fa-solid fa-user-plus mr-1"></i> Add New Record</span>
-        <span class="text-[10px] text-emerald-400 font-bold">🟢 Syncs Directly to Google Sheet</span>
-      </div>
-
-      <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-4 text-xs font-bold">
-        <div>
-          <label class="block text-slate-400 mb-1" id="labelName">NAME / ENTITY</label>
-          <input type="text" id="inputName" placeholder="Enter name..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1" id="labelOwner">OWNER / CONTACT PERSON</label>
-          <input type="text" id="inputOwner" placeholder="Enter owner..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1">PHONE / WHATSAPP</label>
-          <input type="text" id="inputContact" placeholder="03219404812" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1" id="labelSub">SOCIETY / SUB-CATEGORY</label>
-          <select id="inputSub" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
-            <!-- Dynamically populated -->
-          </select>
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1">ADDRESS / DETAILS</label>
-          <input type="text" id="inputDetails" placeholder="Enter details..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
-        </div>
-      </div>
-      <button onclick="addNewRecordToSheet()" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl transition shadow cursor-pointer text-xs">
-        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Sync to Google Sheet
-      </button>
-    </div>
-
     <!-- Sub-Sorting & Filter Bar -->
     <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
       <div class="flex items-center gap-3">
-        <span class="text-amber-400 uppercase tracking-wider" id="activeCategoryTitle">Current View: Dealers</span>
+        <span class="text-amber-400 uppercase tracking-wider" id="activeCategoryTitle">Current View: Plot Owners & Allottees</span>
       </div>
       <div class="flex items-center gap-3 w-full sm:w-auto">
         <select id="subFilterSelect" onchange="applySubSorting()" class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none">
-          <option value="all">All Sub-Categories / Societies</option>
+          <option value="all">All Societies & Blocks</option>
         </select>
       </div>
     </div>
@@ -173,18 +134,19 @@
       <div class="overflow-x-auto text-xs max-h-[600px] overflow-y-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="border-b border-slate-800 text-slate-400 sticky top-0 bg-slate-900">
+            <tr class="border-b border-slate-800 text-slate-400 sticky top-0 bg-slate-900 z-10">
               <th class="p-3">ID / Code</th>
               <th class="p-3">Name / Entity</th>
               <th class="p-3">Contact Person / Owner</th>
               <th class="p-3">Phone / WhatsApp</th>
               <th class="p-3">Sorting / Society / Speciality</th>
-              <th class="p-3">Address / Details</th>
-              <th class="p-3 text-center">Quick WhatsApp & Actions</th>
+              <th class="p-3">CNIC & Address</th>
+              <th class="p-3">Ownership History</th>
+              <th class="p-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody id="directoryTableBody" class="divide-y divide-slate-800 text-slate-300 font-semibold">
-            <tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading live data from Google Sheet...</td></tr>
+            <tr><td colspan="8" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> گوگل شیٹ سے ڈیٹا لائیو لوڈ ہو رہا ہے...</td></tr>
           </tbody>
         </table>
       </div>
@@ -197,9 +159,6 @@
   </footer>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxLhuYcUBTXtwdH3XVPaPiv6cSmxfM4g7spFsZ36Nk3uT61voWUnqG5O_I9LZLmgMG/exec";
-
-    // Google Spreadsheet ID from your open tab
     const SPREADSHEET_ID = "1Bozr8u4F7k4oAl8k3GKclxSDCxTTHOn3ZqGc2STNiQ";
 
     let liveMasterData = {
@@ -211,18 +170,8 @@
       Suppliers: []
     };
 
-    let currentCategory = 'Dealers';
+    let currentCategory = 'Allottees';
 
-    const subCategoriesConfig = {
-      Dealers: ["LDA Avenue 1", "Jubilee Town", "Johar Town", "Sher Shah Colony", "Raiwind Road", "Bahria / DHA"],
-      Allottees: ["LDA Avenue 1", "Jubilee Town", "LDA City", "Johar Town", "Raiwind Road"],
-      Web_Clients: ["Website Leads", "Social Media", "Direct Call Inquiry", "Reference"],
-      Investors: ["Primary Investor", "Strategic Investor", "Partner", "Silent Investor"],
-      Contractors: ["Grey Structure / Mistry", "Plumbing & Sanitary", "Electrical Wiring", "Wood Work & Doors", "Paint & Finishing"],
-      Suppliers: ["Bricks & Tiles", "Sand, Bajri & Crush", "Cement & Steel", "Timber / Wood", "Hardware & Paints"]
-    };
-
-    // Live World Clock Engine
     setInterval(() => {
       const now = new Date();
       document.getElementById('liveClock').innerText = now.toLocaleDateString('en-PK', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) + ' | ' + now.toLocaleTimeString('en-PK');
@@ -231,117 +180,65 @@
     function convertCurrency() {
       let amt = parseFloat(document.getElementById('calcAmount').value) || 0;
       let rate = parseFloat(document.getElementById('calcCurrency').value) || 280;
-      let res = amt * rate;
-      document.getElementById('calcResult').innerText = "Rs. " + res.toLocaleString('en-PK');
+      document.getElementById('calcResult').innerText = "Rs. " + (amt * rate).toLocaleString('en-PK');
     }
 
-    // Two-Way Data Loader: Tries Web App first, then falls back directly to Google Sheet CSV
-    async function loadLiveData() {
-      document.getElementById('directoryTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Syncing live records from Google Sheet...</td></tr>`;
+    async function fetchSheetData(tabName) {
+      const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
+      const res = await fetch(url);
+      const txt = await res.text();
       
-      let loadedFromWebApp = false;
-      try {
-        let res = await fetch(WEB_APP_URL);
-        let json = await res.json();
-        if (json && (json.Allottees || json.Dealers)) {
-          liveMasterData = json;
-          loadedFromWebApp = true;
-        }
-      } catch(err) {
-        console.warn("Web App fetch failed or format mismatched, falling back to direct sheet sync...", err);
+      const jsonString = txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1);
+      const data = JSON.parse(jsonString);
+
+      const rows = data.table.rows;
+      const records = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        const c = rows[i].c;
+        if (!c || !c[0] || !c[0].v) continue;
+
+        records.push({
+          id: c[0] ? String(c[0].v).trim() : '',
+          name: c[1] ? String(c[1].v).trim() : '',
+          owner: c[2] ? String(c[2].v).trim() : '',
+          contact: c[3] ? String(c[3].v).trim() : '',
+          sub: c[4] ? String(c[4].v).trim() : '',
+          cnic: c[5] ? String(c[5].v).trim() : '',
+          address: c[6] ? String(c[6].v).trim() : '',
+          history: c[7] ? String(c[7].v).trim() : 'اصل الاٹی'
+        });
       }
 
-      // If Web App returned empty or failed, fetch directly from Google Sheet CSV
-      if (!loadedFromWebApp || !liveMasterData.Allottees || liveMasterData.Allottees.length === 0) {
-        try {
-          await fetchSheetTabDirectly("Allottees");
-        } catch (e) {
-          console.error("Direct Sheet sync error:", e);
-        }
+      return records;
+    }
+
+    async function loadLiveData() {
+      const tbody = document.getElementById('directoryTableBody');
+      tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-amber-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> گوگل شیٹ سے لائیو ڈیٹا لوڈ ہو رہا ہے...</td></tr>`;
+
+      try {
+        liveMasterData['Allottees'] = await fetchSheetData('Allottees');
+      } catch (err) {
+        console.error("Allottees load error:", err);
       }
 
       switchCategory(currentCategory);
     }
 
-    // Direct Google Sheet Tab Reader
-    async function fetchSheetTabDirectly(tabName) {
-      const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
-      const response = await fetch(csvUrl);
-      const csvText = await response.text();
-      
-      const rows = parseCSV(csvText);
-      if (rows.length <= 1) return;
-
-      const records = [];
-      for (let i = 1; i < rows.length; i++) {
-        const row = rows[i];
-        if (!row || row.length === 0 || !row[0]) continue;
-
-        records.push({
-          id: row[0] || '',
-          name: row[1] || '',
-          owner: row[2] || '',
-          contact: row[3] || '',
-          sub: row[4] || '',
-          cnic: row[5] || '',
-          details: (row[6] || '') + (row[7] ? ' | History: ' + row[7] : '')
-        });
-      }
-
-      liveMasterData[tabName] = records;
-    }
-
-    function parseCSV(text) {
-      let p = '', c = '', r = [];
-      let q = false;
-      let row = [''];
-      for (let i = 0; i < text.length; i++) {
-        c = text[i];
-        let next = text[i+1];
-        if (c === '"') {
-          if (q && next === '"') { row[row.length - 1] += '"'; i++; }
-          else { q = !q; }
-        } else if (c === ',' && !q) {
-          row.push('');
-        } else if ((c === '\r' || c === '\n') && !q) {
-          if (c === '\r' && next === '\n') { i++; }
-          r.push(row);
-          row = [''];
-        } else {
-          row[row.length - 1] += c;
-        }
-      }
-      if (row.length > 1 || row[0] !== '') { r.push(row); }
-      return r;
-    }
-
     function switchCategory(category) {
       currentCategory = category;
-      
+
       document.querySelectorAll('.flex-wrap.gap-2 button').forEach(btn => {
         btn.className = "flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-slate-950 text-slate-300 hover:bg-slate-800 cursor-pointer";
       });
-      document.getElementById('tab-' + category).className = "flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer font-black";
+      
+      const activeBtn = document.getElementById('tab-' + category);
+      if (activeBtn) {
+        activeBtn.className = "flex-1 min-w-[120px] py-3 px-3 rounded-xl transition bg-amber-500 text-slate-950 shadow cursor-pointer font-black";
+      }
 
-      const config = {
-        Dealers: { title: "Current View: Real Estate Dealers", heading: "Add New Dealer", nameLbl: "DEALER / OFFICE NAME", ownerLbl: "OWNER / CEO NAME" },
-        Allottees: { title: "Current View: Plot Owners & Allottees", heading: "Add New Allottee / Owner", nameLbl: "PLOT / PROPERTY IDENTIFIER", ownerLbl: "OWNER NAME" },
-        Web_Clients: { title: "Current View: Website & Social Media Leads", heading: "Add New Web Client", nameLbl: "INQUIRY TITLE / PROJECT", ownerLbl: "CLIENT NAME" },
-        Investors: { title: "Current View: Project Investors", heading: "Add New Investor", nameLbl: "INVESTOR / GROUP NAME", ownerLbl: "REPRESENTATIVE NAME" },
-        Contractors: { title: "Current View: Construction Contractors", heading: "Add New Contractor", nameLbl: "CONTRACTOR / FIRM NAME", ownerLbl: "MASTER / HEAD NAME" },
-        Suppliers: { title: "Current View: Material Suppliers", heading: "Add New Supplier", nameLbl: "SHOP / SUPPLIER NAME", ownerLbl: "OWNER NAME" }
-      };
-
-      document.getElementById('activeCategoryTitle').innerText = config[category].title;
-      document.getElementById('formHeading').innerHTML = `<i class="fa-solid fa-user-plus mr-1"></i> ${config[category].heading}`;
-      document.getElementById('labelName').innerText = config[category].nameLbl;
-      document.getElementById('labelOwner').innerText = config[category].ownerLbl;
-
-      const subSelect = document.getElementById('inputSub');
-      subSelect.innerHTML = '';
-      subCategoriesConfig[category].forEach(sub => {
-        subSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
-      });
+      document.getElementById('activeCategoryTitle').innerText = "Current View: " + category;
 
       populateSubFilters(category);
       renderTable(liveMasterData[category] || []);
@@ -349,11 +246,11 @@
 
     function populateSubFilters(category) {
       const select = document.getElementById('subFilterSelect');
-      select.innerHTML = '<option value="all">All Sub-Categories / Societies</option>';
-      
+      select.innerHTML = '<option value="all">تمام کیٹیگریز اور بلاکس (All)</option>';
+
       let items = liveMasterData[category] || [];
       let subs = [...new Set(items.map(i => i.sub).filter(Boolean))];
-      
+
       subs.forEach(sub => {
         select.innerHTML += `<option value="${sub}">${sub}</option>`;
       });
@@ -361,100 +258,54 @@
 
     function renderTable(list) {
       const tbody = document.getElementById('directoryTableBody');
-      document.getElementById('recordCountBadge').innerText = `Total: ${list.length} Record(s)`;
-      
-      if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No records found in this category. Add via form above or directly in Google Sheet.</td></tr>`;
+      document.getElementById('recordCountBadge').innerText = `کل ریکارڈز: ${list.length}`;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">کوئی ریکارڈ نہیں ملا۔ براۂ کرم گوگل شیٹ چیک کریں۔</td></tr>`;
         return;
       }
 
-      // Display up to 500 rows for lightning speed rendering with pagination/search
-      const displayList = list.slice(0, 500);
+      const displayList = list.slice(0, 300);
       let html = '';
-      
+
       displayList.forEach(item => {
         let phone = String(item.contact || '');
-        let cleanPhone = phone.replace(/\D/g,'');
+        let cleanPhone = phone.replace(/\D/g, '');
         let waNumber = cleanPhone.startsWith('0') ? '92' + cleanPhone.slice(1) : cleanPhone;
-        let defaultMsg = encodeURIComponent(`السلام علیکم ${item.owner || ''} صاحب! بن طہٰ ایسوسی ایٹس (CEO: طاہ مبین بھٹا) کی طرف سے آپ کو خوش آمدید۔ رئیل اسٹیٹ اور کنسٹرکشن اپڈیٹس کے لیے رابطہ کریں۔`);
+        let defaultMsg = encodeURIComponent(`السلام علیکم ${item.owner || ''} صاحب! بن طہٰ ایسوسی ایٹس کی جانب سے رابطہ کیا جا رہا ہے۔`);
 
         html += `
-          <tr>
-            <td class="p-3 text-amber-400 font-bold whitespace-nowrap">${item.id || 'N/A'}</td>
-            <td class="p-3 text-white font-black">${item.name || 'N/A'}</td>
-            <td class="p-3">${item.owner || 'N/A'}</td>
+          <tr class="hover:bg-slate-900/60 transition">
+            <td class="p-3 text-amber-400 font-bold whitespace-nowrap">${item.id}</td>
+            <td class="p-3 text-white font-black">${item.name}</td>
+            <td class="p-3 text-slate-200">${item.owner}</td>
             <td class="p-3 text-emerald-400 font-bold whitespace-nowrap"><i class="fa-solid fa-phone mr-1"></i>${phone}</td>
-            <td class="p-3"><span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400 whitespace-nowrap">${item.sub || 'N/A'}</span></td>
-            <td class="p-3 text-slate-400 max-w-xs truncate" title="${item.details || ''}">${item.details || 'N/A'}</td>
+            <td class="p-3"><span class="bg-slate-950 px-2.5 py-1 rounded-lg text-cyan-400 whitespace-nowrap">${item.sub}</span></td>
+            <td class="p-3 text-slate-400 text-xs">
+              <span class="block text-slate-300 font-semibold">${item.cnic || 'CNIC: N/A'}</span>
+              <span class="block truncate max-w-xs" title="${item.address}">${item.address || 'Address: N/A'}</span>
+            </td>
+            <td class="p-3 text-slate-400 text-xs max-w-xs truncate" title="${item.history}">
+              <i class="fa-solid fa-clock-rotate-left text-amber-400 mr-1"></i>${item.history}
+            </td>
             <td class="p-3 text-center space-x-2 whitespace-nowrap">
-              <a href="tel:${phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg inline-block transition" title="Call Now"><i class="fa-solid fa-phone"></i></a>
-              <a href="https://wa.me/${waNumber}?text=${defaultMsg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg inline-block transition font-bold" title="Send WhatsApp Campaign"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
+              ${phone && phone !== 'Pending Mobile' ? `
+                <a href="tel:${phone}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg inline-block transition" title="کال کریں"><i class="fa-solid fa-phone"></i></a>
+                <a href="https://wa.me/${waNumber}?text=${defaultMsg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg inline-block transition font-bold" title="واٹس ایپ میسج"><i class="fa-brands fa-whatsapp mr-1"></i> واٹس ایپ</a>
+              ` : '<span class="text-slate-600">Pending</span>'}
             </td>
           </tr>
         `;
       });
+
       tbody.innerHTML = html;
-    }
-
-    async function addNewRecordToSheet() {
-      const name = document.getElementById('inputName').value.trim();
-      const owner = document.getElementById('inputOwner').value.trim();
-      const contact = document.getElementById('inputContact').value.trim();
-      const sub = document.getElementById('inputSub').value;
-      const details = document.getElementById('inputDetails').value.trim();
-
-      if(!name || !contact) {
-        alert('⚠️ Please fill in Name and Phone Number!');
-        return;
-      }
-
-      const prefix = { Dealers: 'DL', Allottees: 'ALT', Web_Clients: 'WEB', Investors: 'INV', Contractors: 'CON', Suppliers: 'SUP' };
-      const newId = prefix[currentCategory] + '-' + Date.now().toString().slice(-4);
-
-      const payload = {
-        tab: currentCategory,
-        id: newId,
-        name: name,
-        owner: owner || 'N/A',
-        contact: contact,
-        sub: sub,
-        details: details || 'Lahore'
-      };
-
-      const btn = document.getElementById('submitBtn');
-      btn.innerText = "Syncing to Google Sheet...";
-      btn.disabled = true;
-
-      try {
-        let res = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        let result = await res.json();
-        
-        if(result.status === 'success') {
-          alert(`✅ Success! Record added to Google Sheet under "${currentCategory}".`);
-          document.getElementById('inputName').value = '';
-          document.getElementById('inputOwner').value = '';
-          document.getElementById('inputContact').value = '';
-          document.getElementById('inputDetails').value = '';
-          await loadLiveData();
-        } else {
-          alert(`❌ Error from Sheet: ${result.message}`);
-        }
-      } catch(err) {
-        alert(`❌ Sync failed: ${err}`);
-      } finally {
-        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Save & Sync to Google Sheet`;
-        btn.disabled = false;
-      }
     }
 
     function applySubSorting() {
       let subVal = document.getElementById('subFilterSelect').value;
       let items = liveMasterData[currentCategory] || [];
-      
-      if(subVal === 'all') {
+
+      if (subVal === 'all') {
         renderTable(items);
       } else {
         let filtered = items.filter(i => String(i.sub).includes(subVal));
@@ -465,13 +316,13 @@
     function filterDirectory() {
       let query = document.getElementById('globalSearchInput').value.toLowerCase();
       let items = liveMasterData[currentCategory] || [];
-      
+
       let filtered = items.filter(i => 
         String(i.name).toLowerCase().includes(query) || 
         String(i.contact).toLowerCase().includes(query) || 
         String(i.owner).toLowerCase().includes(query) ||
         String(i.sub).toLowerCase().includes(query) ||
-        String(i.details).toLowerCase().includes(query) ||
+        String(i.cnic).toLowerCase().includes(query) ||
         String(i.id).toLowerCase().includes(query)
       );
       renderTable(filtered);
